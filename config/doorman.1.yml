@@ -1,0 +1,16 @@
+admin:
+  orders:
+    create: true
+    edit: true
+    delete: true
+manager:
+  orders:
+    create: true
+    edit: true
+    delete: false
+worker:
+  orders:
+    create: true
+    edit: true
+    delete: true
+    read: true    
