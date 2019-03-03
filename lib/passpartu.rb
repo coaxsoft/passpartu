@@ -1,6 +1,5 @@
 require 'passpartu/version'
 require 'yaml'
-require 'byebug'
 require_relative 'passpartu/patcher'
 require_relative 'passpartu/verify'
 require_relative 'passpartu/validate_result'

@@ -1,5 +1,3 @@
-require 'byebug'
-
 module Passpartu
   class Patcher
     attr_reader :klass

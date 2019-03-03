@@ -1,5 +1,3 @@
-# require 'byebug'
-
 module Passpartu
   class Verify
     attr_reader :role, :keys

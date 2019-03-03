@@ -9,8 +9,8 @@ Gem::Specification.new do |spec|
   spec.email         = ['falchuko@gmail.com']
 
   spec.summary       = 'Passpartu makes policies great again'
-  spec.description   = 'Passpartu is a great tool to manage your policies. \n
-                        Keep all your policy rules in one file - doorman.yml. \n
+  spec.description   = 'Passpartu is a great tool to manage your policies.
+                        Keep all your policy rules in one file - doorman.yml.
                         And ask user not about it\'s role, but about it\'s permissions'
   spec.homepage      = 'https://github.com/OrestF/passpartu'
   spec.license       = 'MIT'
@@ -37,10 +37,9 @@ Gem::Specification.new do |spec|
   spec.bindir        = 'exe'
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
-  spec.files = Dir['README.md', 'lib/**/*', 'lib/*', 'doorman.gemspec']
+  spec.files = Dir['README.md', 'lib/**/*', 'lib/*', 'passpartu.gemspec']
 
   spec.add_development_dependency 'bundler', '~> 2.0'
-  spec.add_development_dependency 'byebug'
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'rspec', '~> 3.0'
 end

@@ -1,5 +1,3 @@
-# require 'byebug'
-
 module Passpartu
   class ValidateResult
     class PolicyMissedError < StandardError; end

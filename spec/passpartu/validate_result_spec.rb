@@ -1,5 +1,3 @@
-require 'byebug'
-
 RSpec.describe Passpartu::ValidateResult do
   describe '#call' do
     context 'with raise_policy_missed_error: true' do

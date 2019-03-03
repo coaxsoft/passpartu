@@ -1,4 +1,4 @@
 source 'https://rubygems.org'
 
-# Specify your gem's dependencies in doorman.gemspec
+# Specify your gem's dependencies in passpartu.gemspec
 gemspec

@@ -1,5 +1,3 @@
-require 'byebug'
-
 RSpec.describe Passpartu::Verify do
   describe '#call' do
     let(:policy_class) { Passpartu.config.policy_class }

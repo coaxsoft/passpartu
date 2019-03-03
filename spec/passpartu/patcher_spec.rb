@@ -1,5 +1,3 @@
-require 'byebug'
-
 RSpec.describe Passpartu::Patcher do
   describe '#call' do
     let(:policy_class) { Passpartu::User }
