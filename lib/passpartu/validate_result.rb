@@ -1,6 +1,6 @@
 # require 'byebug'
 
-module Doorman
+module Passpartu
   class ValidateResult
     class PolicyMissedError < StandardError; end
 
@@ -27,7 +27,7 @@ module Doorman
     end
 
     def raise_error?
-      !boolean? && Doorman.config.raise_policy_missed_error
+      !boolean? && Passpartu.config.raise_policy_missed_error
     end
   end
 end

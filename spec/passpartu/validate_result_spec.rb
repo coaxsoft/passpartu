@@ -1,6 +1,6 @@
 require 'byebug'
 
-RSpec.describe Doorman::ValidateResult do
+RSpec.describe Passpartu::ValidateResult do
   describe '#call' do
     context 'with raise_policy_missed_error: true' do
       context 'with true' do
@@ -30,7 +30,7 @@ RSpec.describe Doorman::ValidateResult do
 
     context 'with raise_policy_missed_error: false' do
       before do
-        Doorman.config.raise_policy_missed_error = false
+        Passpartu.config.raise_policy_missed_error = false
       end
       context 'with true' do
         it 'returns true' do

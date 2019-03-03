@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    doorman (0.1.0)
+    passpartu (0.1.0)
 
 GEM
   remote: https://rubygems.org/
@@ -29,7 +29,7 @@ PLATFORMS
 DEPENDENCIES
   bundler (~> 2.0)
   byebug
-  doorman!
+  passpartu!
   rake (~> 10.0)
   rspec (~> 3.0)
 

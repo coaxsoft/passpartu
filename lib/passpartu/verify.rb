@@ -1,6 +1,6 @@
 # require 'byebug'
 
-module Doorman
+module Passpartu
   class Verify
     attr_reader :role, :keys
     def initialize(role, keys)
@@ -13,7 +13,7 @@ module Doorman
     end
 
     def call
-      Doorman::ValidateResult.call(Doorman.policy.dig(role.to_s, *keys))
+      Passpartu::ValidateResult.call(Passpartu.policy.dig(role.to_s, *keys))
     end
   end
 end

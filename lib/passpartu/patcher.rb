@@ -1,6 +1,6 @@
 require 'byebug'
 
-module Doorman
+module Passpartu
   class Patcher
     attr_reader :klass
     def initialize(klass)
@@ -14,7 +14,7 @@ module Doorman
     def call
       klass.class_eval do
         define_method('can?') do |*keys|
-          Doorman::Verify.call(role, keys)
+          Passpartu::Verify.call(role, keys)
         end
       end
     end

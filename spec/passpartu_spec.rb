@@ -1,19 +1,15 @@
-RSpec.describe Doorman do
+RSpec.describe Passpartu do
   it 'has a version number' do
-    expect(Doorman::VERSION).not_to be nil
+    expect(Passpartu::VERSION).not_to be nil
   end
 
-  it 'set User class by default' do
-    expect(Doorman.config.policy_class).to eq User
-  end
-
-  it "set default policy file to './config/doorman.yml'" do
-    Doorman.configure {}
-    expect(Doorman.config.policy_file).to eq './config/doorman.yml'
+  it "set default policy file to './config/passpartu.yml'" do
+    Passpartu.configure {}
+    expect(Passpartu.config.policy_file).to eq './config/passpartu.yml'
   end
 
   it 'set default policy to match policy_file rules for admin' do
-    policy = Doorman.config.policy
+    policy = Passpartu.config.policy
     expect(policy.dig('admin', 'orders', 'create')).to eq true
     expect(policy.dig('admin', 'orders', 'edit')).to eq true
     expect(policy.dig('admin', 'orders', 'delete')).to eq true
@@ -24,7 +20,7 @@ RSpec.describe Doorman do
   end
 
   it 'set default policy to match policy_file rules for manager' do
-    policy = Doorman.config.policy
+    policy = Passpartu.config.policy
     expect(policy.dig('manager', 'orders', 'create')).to eq true
     expect(policy.dig('manager', 'orders', 'edit')).to eq true
     expect(policy.dig('manager', 'orders', 'delete')).to eq false

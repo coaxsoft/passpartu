@@ -1,18 +1,18 @@
 lib = File.expand_path('lib', __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'doorman/version'
+require 'passpartu/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'doorman'
-  spec.version       = Doorman::VERSION
+  spec.name          = 'passpartu'
+  spec.version       = Passpartu::VERSION
   spec.authors       = ['OrestF']
   spec.email         = ['falchuko@gmail.com']
 
-  spec.summary       = 'Doorman makes policies great again'
-  spec.description   = 'Doorman is a great tool to manage your policies. \n
+  spec.summary       = 'Passpartu makes policies great again'
+  spec.description   = 'Passpartu is a great tool to manage your policies. \n
                         Keep all your policy rules in one file - doorman.yml. \n
                         And ask user not about it\'s role, but about it\'s permissions'
-  spec.homepage      = 'https://github.com/OrestF/doorman'
+  spec.homepage      = 'https://github.com/OrestF/passpartu'
   spec.license       = 'MIT'
   spec.required_ruby_version = '>= 2.0.0'
 

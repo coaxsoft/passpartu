@@ -1,8 +1,8 @@
 require 'byebug'
 
-RSpec.describe Doorman::Verify do
+RSpec.describe Passpartu::Verify do
   describe '#call' do
-    let(:policy_class) { Doorman.config.policy_class }
+    let(:policy_class) { Passpartu.config.policy_class }
 
     context 'for admin' do
       let(:role) { 'admin' }

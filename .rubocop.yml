@@ -1,9 +1,8 @@
 AllCops:
   Exclude:
-    - doorman.gemspec
+    - passpartu.gemspec
     - spec/**/*.rb
     - spec/*.rb
-    - lib/doorman/helpers.rb
 
 Style/Documentation:
   Enabled: false

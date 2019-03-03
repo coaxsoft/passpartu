@@ -1,6 +1,6 @@
 # for testing only
 
-module Doorman
+module Passpartu
   class User
     attr_reader :role
 
