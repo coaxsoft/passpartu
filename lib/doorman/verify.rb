@@ -1,4 +1,4 @@
-require 'byebug'
+# require 'byebug'
 
 module Doorman
   class Verify

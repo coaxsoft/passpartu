@@ -4,10 +4,10 @@ module Doorman
   class Patcher
     attr_reader :klass
     def initialize(klass)
-      @klass = klass || User
+      @klass = klass
     end
 
-    def self.call(klass = nil)
+    def self.call(klass)
       new(klass).call
     end
 

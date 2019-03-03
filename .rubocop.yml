@@ -1,0 +1,9 @@
+AllCops:
+  Exclude:
+    - doorman.gemspec
+    - spec/**/*.rb
+    - spec/*.rb
+    - lib/doorman/helpers.rb
+
+Style/Documentation:
+  Enabled: false

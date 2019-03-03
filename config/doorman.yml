@@ -3,14 +3,16 @@ admin:
     create: true
     edit: true
     delete: true
+  products:
+    create: false
+    edit: true
+    delete: true  
 manager:
   orders:
     create: true
     edit: true
     delete: false
-worker:
-  orders:
-    create: false
-    edit: false
+  products:
+    create: true
+    edit: true
     delete: false
-    read: false

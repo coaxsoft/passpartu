@@ -9,7 +9,9 @@ Gem::Specification.new do |spec|
   spec.email         = ['falchuko@gmail.com']
 
   spec.summary       = 'Doorman makes policies great again'
-  spec.description   = 'Doorman makes policies great again'
+  spec.description   = 'Doorman is a great tool to manage your policies. \n
+                        Keep all your policy rules in one file - doorman.yml. \n
+                        And ask user not about it\'s role, but about it\'s permissions'
   spec.homepage      = 'https://github.com/OrestF/doorman'
   spec.license       = 'MIT'
   spec.required_ruby_version = '>= 2.0.0'
@@ -38,6 +40,7 @@ Gem::Specification.new do |spec|
   spec.files = Dir['README.md', 'lib/**/*', 'lib/*', 'doorman.gemspec']
 
   spec.add_development_dependency 'bundler', '~> 2.0'
+  spec.add_development_dependency 'byebug'
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'rspec', '~> 3.0'
 end
