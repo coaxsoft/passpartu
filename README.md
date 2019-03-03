@@ -74,7 +74,7 @@ Passpartu.configure do |config|
 end
 ```
 ### Raise policy missed errors
-By default Passpartu will raise an error if policy is missed in `passpartu.yml`. Set `config.raise_policy_missed_error = false` in order to return `false` in case when policy is not defined. This is a good approach to write only "positive" policies (only true) and automatically restricts everything that is not mentioned in `passpartu.yml`
+By default Passpartu will raise an PolicyMissedError if policy is missed in `passpartu.yml`. In initializer set  `config.raise_policy_missed_error = false` in order to return `false` in case when policy is not defined. This is a good approach to write only "positive" policies (only true) and automatically restricts everything that is not mentioned in `passpartu.yml`
 
 ## Installation
 
