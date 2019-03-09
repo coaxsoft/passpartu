@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.summary       = 'Passpartu makes policies great again'
   spec.description   = 'Passpartu is a great tool to manage your policies.
                         Keep all your policy rules in one file - passpartu.yml.'
-  spec.homepage      = 'https://github.com/OrestF/passpartu'
+  spec.homepage      = 'https://github.com/coaxsoft/passpartu'
   spec.license       = 'MIT'
   spec.required_ruby_version = '>= 2.0.0'
 

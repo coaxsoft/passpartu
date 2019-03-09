@@ -63,7 +63,7 @@ manager:
 
 ## Configuration
 
-You can configure Doorman by creating `./config/initializers/passpartu.rb`.
+You can configure Passpartu by creating `./config/initializers/passpartu.rb`.
 
 #### Default configs are:
 
@@ -110,4 +110,7 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Code of Conduct
 
-Everyone interacting in the Doorman project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/OrestF/passpartu/blob/master/CODE_OF_CONDUCT.md).
+Everyone interacting in the Passpartu project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/coaxsoft/passpartu/blob/master/CODE_OF_CONDUCT.md).
+
+## Idea
+Initially designed and created by [Orest Falchuk](https://github.com/OrestF)
