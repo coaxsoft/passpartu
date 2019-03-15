@@ -47,7 +47,10 @@ admin:
   product:
     create: false
     edit: true
-    delete: true  
+    delete: true
+  items:  
+    crud: true
+    delete: false
 manager:
   order:
     create: true
@@ -59,7 +62,10 @@ manager:
     delete: false
 
 ```
-
+#### Crud
+It's possible to use `crud` key to set values for `create`, `read`, `update`, `delete` at once.
+`create`, `read`, `update`, `delete` has higher priority than `crud`
+In case `crud: true` and `delete: false` - result `false` 
 
 ## Configuration
 
