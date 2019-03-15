@@ -14,7 +14,7 @@ module Passpartu
 
     def call
       check
-      check_crud if policy_missed?
+      check_crud if policy_missed? && last_key_crud?
 
       validate_result
     end
@@ -40,6 +40,10 @@ module Passpartu
 
     def validate_result
       Passpartu::ValidateResult.call(result)
+    end
+
+    def last_key_crud?
+      %w[create read update delete].include?(keys[-1])
     end
   end
 end
