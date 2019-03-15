@@ -6,7 +6,9 @@ admin:
   products:
     create: false
     edit: true
-    delete: true  
+    delete: true
+  items:
+    crud: true
 manager:
   orders:
     create: true

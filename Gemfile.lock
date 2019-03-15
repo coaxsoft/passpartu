@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    passpartu (0.2.1)
+    passpartu (0.3.0)
 
 GEM
   remote: https://rubygems.org/
