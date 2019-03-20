@@ -2,6 +2,7 @@ require 'passpartu/version'
 require 'yaml'
 require_relative 'passpartu/patcher'
 require_relative 'passpartu/verify'
+require_relative 'passpartu/block_verify'
 require_relative 'passpartu/validate_result'
 require_relative 'passpartu/user' # for testing only
 
