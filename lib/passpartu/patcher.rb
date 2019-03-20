@@ -11,8 +11,8 @@ module Passpartu
 
     def call
       klass.class_eval do
-        define_method('can?') do |*keys|
-          Passpartu::Verify.call(role, keys)
+        define_method('can?') do |*keys, except: nil|
+          Passpartu::Verify.call(role, keys, except: except)
         end
       end
     end
