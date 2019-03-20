@@ -67,6 +67,20 @@ It's possible to use `crud` key to set values for `create`, `read`, `update`, `d
 `create`, `read`, `update`, `delete` has higher priority than `crud`
 In case `crud: true` and `delete: false` - result `false` 
 
+
+#### Except
+It's possible to exclude role from checks
+```ruby
+    user_admin.can?(:orders, :edit) # check policy for admin and returns true if policy true
+    user_admin.can?(:orders, :edit, except: :admin) # returns false because user is admin and we excluded admin
+    
+```
+It's possible to give an array as except attribute
+
+```ruby
+  user_admin.can?(:orders, :edit, except: [:admin, :manager]) # returns false
+  user_manager.can?(:orders, :edit, except: [:admin, :manager]) # returns false
+```
 ## Configuration
 
 You can configure Passpartu by creating `./config/initializers/passpartu.rb`.
