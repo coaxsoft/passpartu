@@ -123,5 +123,31 @@ RSpec.describe Passpartu::Verify do
         end
       end
     end
+
+    context 'expect param' do
+      context 'admin' do
+        let(:role) { 'admin' }
+        let(:except) { :admin }
+
+        it 'returns false for admin and true for manager' do
+          expect(described_class.call(role, %i[orders create])).to eq true
+
+          expect(described_class.call(role, %i[orders create], except: except)).to eq false
+          expect(described_class.call(:manager, %i[orders create], except: except)).to eq true
+        end
+      end
+
+      context 'admin and manger' do
+        let(:except) { [:admin, :manager] }
+
+        it 'returns false for admin and manager' do
+          expect(described_class.call(:admin, %i[orders create])).to eq true
+          expect(described_class.call(:manager, %i[orders create])).to eq true
+
+          expect(described_class.call(:admin, %i[orders create], except: except)).to eq false
+          expect(described_class.call(:manager, %i[orders create], except: except)).to eq false
+        end
+      end
+    end
   end
 end
