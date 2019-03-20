@@ -6,3 +6,9 @@ AllCops:
 
 Style/Documentation:
   Enabled: false
+
+Style/DoubleNegation:
+  Enabled: false
+
+Metrics/LineLength:
+  Max: 120

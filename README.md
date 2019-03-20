@@ -81,6 +81,55 @@ It's possible to give an array as except attribute
   user_admin.can?(:orders, :edit, except: [:admin, :manager]) # returns false
   user_manager.can?(:orders, :edit, except: [:admin, :manager]) # returns false
 ```
+
+#### Per role methods
+Check user roles AND policy rule
+```ruby
+    # check if user admin AND returns true if policy true
+    user_admin.admin_can?(:orders, :edit) # true
+    
+    # check if user manager AND returns true if policy true
+    user_admin.manager_can?(:orders, :edit) # false
+```
+
+#### Code blocks
+```ruby
+  # check rules as usual AND code in the block   
+  user_agent.can?(:orders, :edit, except: [:admin, :manager]) { user_agent.orders.include?(order) }
+  
+  # OR   
+  user_agent.agent_can?(:orders, :edit, except: [:admin, :manager]) { user_agent.orders.include?(order) }
+```
+
+##### Real life example
+You need to check custom rule for agent
+```yml
+# ./config/passpartu.yml
+
+admin:
+  order:
+    create: true
+    edit: true
+    delete: true
+manager:
+  order:
+    create: true
+    edit: true
+    delete: false
+agent:
+  order:
+    create: true
+    edit: true
+    delete: false
+```
+
+```ruby
+    user.can?(:order, :edit, except: :agent) || user.agent_can?(:order, :edit) { user.orders.include?(order) }
+```
+
+1. This code returns `true` if user is `admin` or `manager`
+1. This code returns `true` if user is `agent` AND if agent policy set to `true` AND if given block returns true
+
 ## Configuration
 
 You can configure Passpartu by creating `./config/initializers/passpartu.rb`.
