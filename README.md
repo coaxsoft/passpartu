@@ -1,6 +1,6 @@
-# Passpartu
+# Passpartu v0.5.5 - [changelog](https://github.com/coaxsoft/passpartu/blob/master/CHANGELOG.md)
 
-Passpartu makes policies great again (works awesome with Pundit).
+Passpartu makes policies great again (works awesome with [Pundit](https://rubygems.org/gems/pundit)).
 
 Instead of this:
 ```ruby
@@ -31,11 +31,22 @@ NOTE: Your `User` model must respond to `role` method that returns a string or a
 Keep all your policies in one place.
 Create `./config/passpartu.yml` and start writing your policies.
 
-#### Example
+#### Example of `passpartu.yml`
 ```yml
 # ./config/passpartu.yml
+manager: &manager
+  order:
+    create: true
+    edit: true
+    delete: false
+  product:
+    create: true
+    edit: true
+    delete: false
 
+# yaml files supports inheritance!
 admin:
+  <<: *manager
   post:
     create: false
     update: true
@@ -51,25 +62,17 @@ admin:
   items:  
     crud: true
     delete: false
-manager:
-  order:
-    create: true
-    edit: true
-    delete: false
-  product:
-    create: true
-    edit: true
-    delete: false
-
 ```
-#### Crud
+
+## Features
+#### CRUD
 It's possible to use `crud` key to set values for `create`, `read`, `update`, `delete` at once.
 `create`, `read`, `update`, `delete` has higher priority than `crud`
 In case `crud: true` and `delete: false` - result `false` 
 
 
-#### Except
-It's possible to exclude role from checks
+#### Skip (except)
+It's possible to exclude roles from checks
 ```ruby
     user_admin.can?(:orders, :edit) # check policy for admin and returns true if policy true
     user_admin.can?(:orders, :edit, except: :admin) # returns false because user is admin and we excluded admin
@@ -80,6 +83,15 @@ It's possible to give an array as except attribute
 ```ruby
   user_admin.can?(:orders, :edit, except: [:admin, :manager]) # returns false
   user_manager.can?(:orders, :edit, except: [:admin, :manager]) # returns false
+```
+
+`skip` alias to `except`
+
+Note: `expect` has higher priority than `skip`. Do not use both.
+```ruby
+  user_agent.can?(:orders, :edit, except: [:admin, :manager]) { user_agent.orders.include?(order) }
+  # equals to
+  user_agent.can?(:orders, :edit, skip: [:admin, :manager]) { user_agent.orders.include?(order) }
 ```
 
 #### Per role methods

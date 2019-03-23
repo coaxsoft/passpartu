@@ -1,3 +1,3 @@
 module Passpartu
-  VERSION = '0.5.0'.freeze
+  VERSION = '0.5.5'.freeze
 end
