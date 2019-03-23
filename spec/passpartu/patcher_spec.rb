@@ -25,6 +25,45 @@ RSpec.describe Passpartu::Patcher do
       end
     end
 
+    context 'with skip attribute' do
+      it 'add method can? to policy_class with skip param' do
+        described_class.call(policy_class)
+
+        expect(policy_class.new('admin').respond_to?(:can?)).to eq true
+        expect(policy_class.new('admin').can?(:orders, :edit)).to eq true
+      end
+
+      it 'returns false if role skipped' do
+        described_class.call(policy_class)
+
+        expect(policy_class.new('admin').respond_to?(:can?)).to eq true
+        expect(policy_class.new('admin').can?(:orders, :edit)).to eq true
+        expect(policy_class.new('admin').can?(:orders, :edit, skip: :admin)).to eq false
+        expect(policy_class.new('admin').can?(:orders, :edit, skip: [:admin, :manager])).to eq false
+      end
+    end
+
+    context 'with skip and except(higher priority) attribute' do
+      context 'skip: admin, except: manager' do
+        it 'ignores skip param and returns true for admin role' do
+          described_class.call(policy_class)
+
+          expect(policy_class.new('admin').respond_to?(:can?)).to eq true
+          expect(policy_class.new('admin').can?(:orders, :edit)).to eq true
+          expect(policy_class.new('admin').can?(:orders, :edit, skip: :admin, except: :manager)).to eq true
+        end
+
+        it 'ignores skip param and returns false for admin role' do
+          described_class.call(policy_class)
+
+          expect(policy_class.new('admin').respond_to?(:can?)).to eq true
+          expect(policy_class.new('admin').can?(:orders, :edit)).to eq true
+          expect(policy_class.new('admin').can?(:orders, :edit, skip: :manager, except: :admin)).to eq false
+        end
+      end
+
+    end
+
     context 'with block given' do
       it 'return true for true block' do
         described_class.call(policy_class)

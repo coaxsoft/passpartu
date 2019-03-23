@@ -1,6 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.5.5] - 2019-03-23
+### Added
+- `Skip` alias to `except`
+```ruby
+  user_agent.can?(:orders, :edit, except: [:admin, :manager]) { user_agent.orders.include?(order) }
+  # equals to
+  user_agent.can?(:orders, :edit, skip: [:admin, :manager]) { user_agent.orders.include?(order) }
+```
 
 ## [0.5.0] - 2019-03-20
 ### Added
