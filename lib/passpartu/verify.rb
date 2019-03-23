@@ -3,15 +3,17 @@ module Passpartu
     CRUD_KEY = 'crud'.freeze
 
     attr_reader :role, :keys, :result, :except, :block
-    def initialize(role, keys, except, block)
+    def initialize(role, keys, except, skip, block)
+      exclusion = except || skip # alias
+
       @role = role.to_s
       @keys = keys.map(&:to_s)
-      @except = Array(except).map(&:to_s) if present?(except)
+      @except = Array(exclusion).map(&:to_s) if present?(exclusion)
       @block = block
     end
 
-    def self.call(role, keys, except: nil, &block)
-      new(role, keys, except, block).call
+    def self.call(role, keys, except: nil, skip: nil, &block)
+      new(role, keys, except, skip, block).call
     end
 
     def call
