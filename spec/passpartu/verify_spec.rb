@@ -149,5 +149,56 @@ RSpec.describe Passpartu::Verify do
         end
       end
     end
+
+    context 'only param' do
+      context 'admin' do
+        let(:role) { 'admin' }
+        let(:only) { :admin }
+
+        it 'returns true for admin and false for manager' do
+          expect(described_class.call(role, %i[orders create])).to eq true
+
+          expect(described_class.call(role, %i[orders create], only: only)).to eq true
+          expect(described_class.call(:manager, %i[orders create], only: only)).to eq false
+        end
+      end
+
+      context 'admin and manger' do
+        let(:only) { [:admin, :manager] }
+
+        it 'returns false for admin and manager' do
+          expect(described_class.call(:admin, %i[orders create])).to eq true
+          expect(described_class.call(:manager, %i[orders create])).to eq true
+
+          expect(described_class.call(:admin, %i[orders create], only: only)).to eq true
+          expect(described_class.call(:manager, %i[orders create], only: only)).to eq true
+          expect(described_class.call(:worker, %i[orders create], only: only)).to eq false
+        end
+      end
+    end
+
+    context 'only & except param' do
+      context 'admin' do
+        let(:role) { 'admin' }
+        let(:only) { :admin }
+        let(:except) { :admin }
+
+        it 'returns true for admin' do
+          expect(described_class.call(role, %i[orders create], only: only, except: except)).to eq true
+        end
+      end
+
+      context 'admin and manger' do
+        it 'returns true for admin and false for manager' do
+          expect(described_class.call(:admin, %i[orders create], only: :admin, except: :manager)).to eq true
+          expect(described_class.call(:manager, %i[orders create], only: :admin, except: :manager)).to eq false
+        end
+
+        it 'returns true for admin and manager' do
+          expect(described_class.call(:admin, %i[orders create], only: [:admin, :manager], except: :manager)).to eq true
+          expect(described_class.call(:manager, %i[orders create], only: [:admin, :manager], except: :manager)).to eq true
+        end
+      end
+    end
   end
 end
