@@ -12,3 +12,9 @@ Style/DoubleNegation:
 
 Metrics/LineLength:
   Max: 120
+
+Metrics/ParameterLists:
+  Max: 6
+
+Metrics/MethodLength:
+  Max: 15
