@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # this is example of initializer
 # this file is required for gem's test cases
 

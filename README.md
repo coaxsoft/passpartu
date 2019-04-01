@@ -1,4 +1,4 @@
-# Passpartu v0.5.5 - [changelog](https://github.com/coaxsoft/passpartu/blob/master/CHANGELOG.md)
+# Passpartu v0.6.0 - [changelog](https://github.com/coaxsoft/passpartu/blob/master/CHANGELOG.md)
 
 Passpartu makes policies great again (works awesome with [Pundit](https://rubygems.org/gems/pundit)).
 
@@ -29,7 +29,7 @@ end
 NOTE: Your `User` model must respond to `role` method that returns a string or a symbol!
 
 Keep all your policies in one place.
-Create `./config/passpartu.yml` and start writing your policies.
+Edit configuration file `./config/passpartu.yml` and start writing your policies.
 
 #### Example of `passpartu.yml`
 ```yml
@@ -50,7 +50,7 @@ admin:
   post:
     create: false
     update: true
-    delete: true 
+    delete: true
   order:
     create: true
     edit: true
@@ -59,7 +59,7 @@ admin:
     create: false
     edit: true
     delete: true
-  items:  
+  items:
     crud: true
     delete: false
 ```
@@ -68,7 +68,7 @@ admin:
 #### CRUD
 It's possible to use `crud` key to set values for `create`, `read`, `update`, `delete` at once.
 `create`, `read`, `update`, `delete` has higher priority than `crud`
-In case `crud: true` and `delete: false` - result `false` 
+In case `crud: true` and `delete: false` - result `false`
 
 #### Only
 It's possible to include specific roles to checks
@@ -95,7 +95,7 @@ It's possible to exclude roles from checks
 ```ruby
     user_admin.can?(:orders, :edit) # check policy for admin and returns true if policy true
     user_admin.can?(:orders, :edit, except: :admin) # returns false because user is admin and we excluded admin
-    
+
 ```
 It's possible to give an array as except attribute
 
@@ -118,17 +118,17 @@ Check user roles AND policy rule
 ```ruby
     # check if user admin AND returns true if policy true
     user_admin.admin_can?(:orders, :edit) # true
-    
+
     # check if user manager AND returns true if policy true
     user_admin.manager_can?(:orders, :edit) # false
 ```
 
 #### Code blocks
 ```ruby
-  # check rules as usual AND code in the block   
+  # check rules as usual AND code in the block
   user_agent.can?(:orders, :edit, except: [:admin, :manager]) { user_agent.orders.include?(order) }
-  
-  # OR   
+
+  # OR
   user_agent.agent_can?(:orders, :edit, except: [:admin, :manager]) { user_agent.orders.include?(order) }
 ```
 
@@ -163,7 +163,7 @@ agent:
 
 ## Configuration
 
-You can configure Passpartu by creating `./config/initializers/passpartu.rb`.
+You can configure Passpartu in `./config/initializers/passpartu.rb`.
 
 #### Default configs are:
 
