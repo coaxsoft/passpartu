@@ -70,6 +70,25 @@ It's possible to use `crud` key to set values for `create`, `read`, `update`, `d
 `create`, `read`, `update`, `delete` has higher priority than `crud`
 In case `crud: true` and `delete: false` - result `false` 
 
+#### Only
+It's possible to include specific roles to checks
+```ruby
+    user_admin.can?(:orders, :edit) # check policy for admin and returns true if policy true
+    user_admin.can?(:orders, :edit, only: :admin) # returns true because the user is an admin and we included only admin
+    user_manager.can?(:orders, :edit, only: :admin) # returns false because user is manager and we included only admin
+```
+It's possible to give an array as only attribute
+
+```ruby
+  user_admin.can?(:orders, :edit, only: [:admin, :manager]) # returns true
+  user_manager.can?(:orders, :edit, only: [:admin, :manager]) # returns true
+```
+
+Note: `only` has higher priority than `except/skip`. Do not use both.
+```ruby
+  user_admin.can?(:orders, :edit, only: :admin, except: :admin) # returns true
+```
+
 
 #### Skip (except)
 It's possible to exclude roles from checks
@@ -183,7 +202,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/OrestF/passpartu. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/coaxsoft/passpartu. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 ## License
 

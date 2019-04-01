@@ -2,22 +2,24 @@ module Passpartu
   class Verify
     CRUD_KEY = 'crud'.freeze
 
-    attr_reader :role, :keys, :result, :except, :block
-    def initialize(role, keys, except, skip, block)
+    attr_reader :role, :keys, :result, :only, :except, :block
+
+    def initialize(role, keys, only, except, skip, block)
       exclusion = except || skip # alias
 
       @role = role.to_s
       @keys = keys.map(&:to_s)
-      @except = Array(exclusion).map(&:to_s) if present?(exclusion)
+      @only = Array(only).map(&:to_s) if present?(only)
+      @except = Array(exclusion).map(&:to_s) if present?(exclusion) && !@only
       @block = block
     end
 
-    def self.call(role, keys, except: nil, skip: nil, &block)
-      new(role, keys, except, skip, block).call
+    def self.call(role, keys, only: nil, except: nil, skip: nil, &block)
+      new(role, keys, only, except, skip, block).call
     end
 
     def call
-      return false if role_excepted?
+      return false if role_ignore?
 
       check_policy
       check_crud if policy_missed? && last_key_crud?
@@ -27,10 +29,11 @@ module Passpartu
 
     private
 
-    def role_excepted?
-      return false if blank?(except)
+    def role_ignore?
+      return !only.include?(role) if present?(only)
+      return except.include?(role) if present?(except)
 
-      except.include?(role)
+      false
     end
 
     def check_policy

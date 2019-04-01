@@ -1,6 +1,21 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.6.0] - 2019-04-01
+### Added
+- Only roles attribute to verifier
+```ruby
+    user_admin.can?(:orders, :edit) # check policy for admin and returns true if policy true
+    user_admin.can?(:orders, :edit, only: :admin) # returns true because the user is an admin and we included only admin
+    user_manager.can?(:orders, :edit, only: :admin) # returns false because user is manager and we included only admin
+```
+It's possible to give an array as only attribute
+
+```ruby
+  user_admin.can?(:orders, :edit, only: [:admin, :manager]) # returns true
+  user_manager.can?(:orders, :edit, only: [:admin, :manager]) # returns true
+```
+
 ## [0.5.5] - 2019-03-23
 ### Added
 - `Skip` alias to `except`
