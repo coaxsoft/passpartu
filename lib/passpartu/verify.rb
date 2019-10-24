@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 module Passpartu
   class Verify
-    CRUD_KEY = 'crud'.freeze
+    CRUD_KEY = 'crud'
 
     attr_reader :role, :keys, :result, :only, :except, :block
 

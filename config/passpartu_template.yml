@@ -1,0 +1,23 @@
+# This is example file. You can change this following this guide:
+# https://github.com/coaxsoft/passpartu#example-of-passpartuyml
+
+# admin:
+#   orders:
+#     create: true
+#     edit: true
+#     delete: true
+#   products:
+#     create: false
+#     edit: true
+#     delete: true
+#   items:
+#     crud: true
+# manager:
+#   orders:
+#     create: true
+#     edit: true
+#     delete: false
+#   products:
+#     create: true
+#     edit: true
+#     delete: false
