@@ -71,4 +71,3 @@ end
 
 require Passpartu::Initializer::DEFAULT_INITIALIZER_PATH
 Passpartu.config.validate_policy
-
