@@ -48,22 +48,6 @@ module Passpartu
       @policy_file = file || DEFAULT_CONFIG_FILE_PATH
       @policy = YAML.load_file(policy_file)
     end
-
-    def validate_policy
-      raise wrong_config_error unless policy.is_a?(Hash)
-    end
-
-    private
-
-    def wrong_config_error
-      <<-ERROR
-
-        ************************************************************************************
-        !!! Passpartu is not configured properly. Check configuration file: #{@policy_file}
-        :: Configuration example: https://github.com/coaxsoft/passpartu#real-life-example ::
-        ************************************************************************************
-      ERROR
-    end
   end
 
   configure {}
