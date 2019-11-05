@@ -36,7 +36,7 @@ module Passpartu
     attr_reader :policy_file, :use_custom_config_file
 
     def initialize
-      @policy_file ||= DEFAULT_CONFIG_FILE_PATH
+      @policy_file = DEFAULT_CONFIG_FILE_PATH
       @raise_policy_missed_error = true
       @use_custom_config_file = false
     end
@@ -53,10 +53,7 @@ module Passpartu
     end
 
     def ensure_policy
-      if policy.nil? && !use_custom_config_file
-        check_or_create_defaults(policy_file)
-      end
-
+      check_or_create_defaults(policy_file) if policy.nil? && !use_custom_config_file
       validate_policy
     end
   end
