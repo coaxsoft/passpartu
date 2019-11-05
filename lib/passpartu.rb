@@ -32,21 +32,32 @@ module Passpartu
   class Config
     include Passpartu::Initializer
 
-    attr_accessor :policy, :raise_policy_missed_error
+    attr_accessor :raise_policy_missed_error
     attr_reader :policy_file, :use_custom_config_file
 
     def initialize
-      @policy_file = DEFAULT_CONFIG_FILE_PATH
-      check_or_create_defaults(@policy_file) unless @use_custom_config_file
-      @policy = YAML.load_file(policy_file)
+      @policy_file ||= DEFAULT_CONFIG_FILE_PATH
       @raise_policy_missed_error = true
       @use_custom_config_file = false
     end
 
     def policy_file=(file = nil)
-      @use_custom_config_file = File.file?(file)
+      @use_custom_config_file = file != DEFAULT_CONFIG_FILE_PATH && File.file?(file)
       @policy_file = file || DEFAULT_CONFIG_FILE_PATH
-      @policy = YAML.load_file(policy_file)
+    end
+
+    def policy
+      @policy ||= YAML.load_file(policy_file)
+    rescue Errno::ENOENT
+      nil
+    end
+
+    def ensure_policy
+      if policy.nil? && !use_custom_config_file
+        check_or_create_defaults(policy_file)
+      end
+
+      validate_policy
     end
   end
 
@@ -54,4 +65,3 @@ module Passpartu
 end
 
 require Passpartu::Initializer::DEFAULT_INITIALIZER_PATH
-Passpartu.config.validate_policy
