@@ -18,3 +18,5 @@ manager:
     create: true
     edit: true
     delete: false
+  payments: true
+super_admin: true

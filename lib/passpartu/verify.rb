@@ -21,8 +21,12 @@ module Passpartu
     def call
       return false if role_ignore?
 
-      check_policy
-      check_crud if policy_missed? && last_key_crud?
+      if hash_include_keys?(policy_hash, role_and_keys)
+        check_policy
+      elsif policy_missed? && last_key_crud?
+        check_crud
+      end
+      check_waterfall if policy_missed?
 
       validate_result
     end
@@ -36,13 +40,46 @@ module Passpartu
       false
     end
 
+    def policy_hash
+      @policy_hash ||= Passpartu.policy
+    end
+
+    def role_and_keys
+      @role_and_keys ||= [role] + keys
+    end
+
     def check_policy
       @result = Passpartu.policy.dig(role, *keys)
     end
 
     def check_crud
       change_crud_key
-      check_policy
+      check_policy if hash_include_keys?(policy_hash, [role] + keys)
+    end
+
+    def check_waterfall
+      keys = role_and_keys.clone
+      loop do
+        keys.pop
+        @result = hash_include_keys?(policy_hash, keys) ? policy_hash.dig(*keys) : nil
+        break if @result || keys.empty?
+      end
+    end
+
+    def hash_include_keys?(hash, keys)
+      flatten_hash(hash).keys.any? { |k| k.include?(keys.join('_')) }
+    end
+
+    def flatten_hash(hash)
+      hash.each_with_object({}) do |(k, v), h|
+        if v.is_a? Hash
+          flatten_hash(v).map do |h_k, h_v|
+            h["#{k}_#{h_k}"] = h_v
+          end
+        else
+          h[k] = v
+        end
+      end
     end
 
     def change_crud_key

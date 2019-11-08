@@ -25,8 +25,20 @@ RSpec.describe Passpartu::Verify do
         expect(described_class.call(role, %i[orders create])).to eq true
       end
 
+      it 'returns true for payments whatever' do
+        expect(described_class.call(role, %i[payments whatever])).to eq true
+      end
+
       it 'returns true for orders delete' do
         expect(described_class.call(role, %i[orders delete])).to eq false
+      end
+    end
+
+    context 'for super_admin' do
+      let(:role) { 'super_admin' }
+
+      it 'returns true for orders create' do
+        expect(described_class.call(role, %i[orders create])).to eq true
       end
     end
 
