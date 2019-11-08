@@ -39,7 +39,7 @@ module Passpartu
     def check_policy
       @result = Passpartu.policy.dig(role, *keys)
     rescue TypeError => e
-      @result = e.message == 'TrueClass does not have #dig method'
+      @result = true if e.message == 'TrueClass does not have #dig method'
     end
 
     def check_crud
