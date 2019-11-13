@@ -50,7 +50,7 @@ admin:
   post:
     create: false
     update: true
-    delete: true 
+    delete: true
   order:
     create: true
     edit: true
@@ -59,16 +59,39 @@ admin:
     create: false
     edit: true
     delete: true
-  items:  
+  items:
     crud: true
     delete: false
 ```
 
 ## Features
+#### Waterfall rules
+To enable feature change waterfall_rules to `true` in config/initializers/passpartu.rb
+```ruby
+  Passpartu.configure do |config|
+    config.waterfall_rules = true
+  end
+```
+If policy rule is missed, but the key above value equals true - positive policy (true)
+It work with any number of keys!
+```yml
+  admin:
+  <<: *manager
+  post:
+    create: false
+    update: true
+    delete: true
+  order: true
+```
+
+```ruby
+  admin_user.can?(:order, :whatever) # true
+```
+
 #### CRUD
 It's possible to use `crud` key to set values for `create`, `read`, `update`, `delete` at once.
 `create`, `read`, `update`, `delete` has higher priority than `crud`
-In case `crud: true` and `delete: false` - result `false` 
+In case `crud: true` and `delete: false` - result `false`
 
 #### Only
 It's possible to include specific roles to checks
@@ -95,7 +118,7 @@ It's possible to exclude roles from checks
 ```ruby
     user_admin.can?(:orders, :edit) # check policy for admin and returns true if policy true
     user_admin.can?(:orders, :edit, except: :admin) # returns false because user is admin and we excluded admin
-    
+
 ```
 It's possible to give an array as except attribute
 
@@ -118,17 +141,17 @@ Check user roles AND policy rule
 ```ruby
     # check if user admin AND returns true if policy true
     user_admin.admin_can?(:orders, :edit) # true
-    
+
     # check if user manager AND returns true if policy true
     user_admin.manager_can?(:orders, :edit) # false
 ```
 
 #### Code blocks
 ```ruby
-  # check rules as usual AND code in the block   
+  # check rules as usual AND code in the block
   user_agent.can?(:orders, :edit, except: [:admin, :manager]) { user_agent.orders.include?(order) }
-  
-  # OR   
+
+  # OR
   user_agent.agent_can?(:orders, :edit, except: [:admin, :manager]) { user_agent.orders.include?(order) }
 ```
 
@@ -171,6 +194,7 @@ You can configure Passpartu by creating `./config/initializers/passpartu.rb`.
 Passpartu.configure do |config|
   config.policy_file = './config/passpartu.yml'
   config.raise_policy_missed_error = true
+  config.waterfall_rules = false
 end
 ```
 ### Raise policy missed errors
