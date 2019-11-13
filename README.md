@@ -1,4 +1,4 @@
-# Passpartu v0.6.0 - [changelog](https://github.com/coaxsoft/passpartu/blob/master/CHANGELOG.md)
+# Passpartu v0.7.0 - [changelog](https://github.com/coaxsoft/passpartu/blob/master/CHANGELOG.md)
 
 Passpartu makes policies great again (works awesome with [Pundit](https://rubygems.org/gems/pundit)).
 
@@ -72,7 +72,7 @@ To enable feature change waterfall_rules to `true` in config/initializers/passpa
     config.waterfall_rules = true
   end
 ```
-If policy rule is missed, but the key above value equals true - positive policy (true)
+If policy rule is missed, but the key above value equals true - positive policy (true).
 It work with any number of keys!
 ```yml
   admin:
