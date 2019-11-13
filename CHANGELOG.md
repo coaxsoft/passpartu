@@ -3,8 +3,8 @@ All notable changes to this project will be documented in this file.
 
 ## [0.7.0] - 2019-11-13
 ### Added
-- Configurable feature - waterfall_rules
-Default value - false
+- Configurable feature - waterfall_rules.
+Default value - false.
 To enable feature change waterfall_rules to `true` in config/initializers/passpartu.rb
 ```ruby
   Passpartu.configure do |config|
