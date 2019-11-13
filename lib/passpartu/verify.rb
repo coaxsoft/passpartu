@@ -1,5 +1,7 @@
 module Passpartu
   class Verify
+    CRUD_KEY = 'crud'.freeze
+
     attr_reader :role, :keys, :result, :only, :except, :block
 
     def initialize(role, keys, only, except, skip, block)
@@ -19,11 +21,21 @@ module Passpartu
     def call
       return false if role_ignore?
 
-      @result = Passpartu::CheckPolicy.call(role_and_keys)
+      check_policy
+      check_crud if policy_missed? && last_key_crud?
+
       validate_result
     end
 
     private
+
+    def policy_hash
+      @policy_hash ||= Passpartu.policy
+    end
+
+    def role_and_keys
+      [role] + keys
+    end
 
     def role_ignore?
       return !only.include?(role) if present?(only)
@@ -32,8 +44,51 @@ module Passpartu
       false
     end
 
-    def role_and_keys
-      [role] + keys
+    def check_policy
+      @result = waterfall_rules? ? check_waterfall_rules : simple_check
+    end
+
+    def simple_check
+      loop_hash = policy_hash.dup
+      role_and_keys.each_with_index do |key, index|
+        if loop_hash[key].is_a? Hash
+          loop_hash = loop_hash[key]
+          next
+        elsif last?(index)
+          @result = loop_hash[key]
+        end
+        break
+      end
+      @result
+    end
+
+    def check_crud
+      change_crud_key
+      check_policy
+    end
+
+    def change_crud_key
+      @keys[-1] = CRUD_KEY
+    end
+
+    def last?(index)
+      index + 1 == role_and_keys.size
+    end
+
+    def policy_missed?
+      @result.nil?
+    end
+
+    def last_key_crud?
+      %w[create read update delete].include?(keys[-1])
+    end
+
+    def waterfall_rules?
+      Passpartu.config.waterfall_rules
+    end
+
+    def check_waterfall_rules
+      Passpartu::Waterfall.call(role_and_keys)
     end
 
     def validate_result
