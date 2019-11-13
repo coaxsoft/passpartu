@@ -6,39 +6,51 @@ RSpec.describe Passpartu::Verify do
       Passpartu.config.raise_policy_missed_error = true
     end
 
-    context 'for admin' do
-      let(:role) { 'admin' }
+    context 'waterfall_rules default(false)' do
+      context 'for admin' do
+        let(:role) { 'admin' }
 
-      it 'returns true for orders create' do
-        expect(described_class.call(role, %i[orders create])).to eq true
+        it 'returns true for orders create' do
+          expect(described_class.call(role, %i[orders create])).to eq true
+        end
+
+        it 'returns true for orders delete' do
+          expect(described_class.call(role, %i[orders delete])).to eq true
+        end
       end
 
-      it 'returns true for orders delete' do
-        expect(described_class.call(role, %i[orders delete])).to eq true
-      end
-    end
+      context 'for maanger' do
+        let(:role) { 'manager' }
 
-    context 'for maanger' do
-      let(:role) { 'manager' }
+        it 'returns true for orders create' do
+          expect(described_class.call(role, %i[orders create])).to eq true
+        end
 
-      it 'returns true for orders create' do
-        expect(described_class.call(role, %i[orders create])).to eq true
-      end
-
-      it 'returns true for payments whatever' do
-        expect(described_class.call(role, %i[payments whatever])).to eq true
-      end
-
-      it 'returns true for orders delete' do
-        expect(described_class.call(role, %i[orders delete])).to eq false
+        it 'returns true for orders delete' do
+          expect(described_class.call(role, %i[orders delete])).to eq false
+        end
       end
     end
 
-    context 'for super_admin' do
-      let(:role) { 'super_admin' }
+    context 'waterfall_rules true' do
+      before do
+        Passpartu.config.waterfall_rules = true
+      end
 
-      it 'returns true for orders create' do
-        expect(described_class.call(role, %i[orders create])).to eq true
+      context 'for maanger' do
+        let(:role) { 'manager' }
+
+        it 'returns true for payments whatever' do
+          expect(described_class.call(role, %i[payments whatever])).to eq true
+        end
+      end
+
+      context 'for super_admin' do
+        let(:role) { 'super_admin' }
+
+        it 'returns true for orders create' do
+          expect(described_class.call(role, %i[orders create])).to eq true
+        end
       end
     end
 

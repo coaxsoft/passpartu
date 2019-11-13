@@ -46,11 +46,11 @@ module Passpartu
 
     def check_policy
       loop_hash = policy_hash.dup
-      role_and_keys.each do |key|
-        if loop_hash[key] == true
+      role_and_keys.each_with_index do |key, index|
+        if loop_hash[key] == true && (Passpartu.config.waterfall_rules || index + 1 == role_and_keys.size)
           @result = true
           break
-        elsif loop_hash[key] == false
+        elsif loop_hash[key] == false && (Passpartu.config.waterfall_rules || index + 1 == role_and_keys.size)
           @result = false
           break
         elsif loop_hash[key].is_a? Hash
