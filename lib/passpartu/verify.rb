@@ -21,8 +21,9 @@ module Passpartu
     def call
       return false if role_ignore?
 
-      check_policy
+      default_check
       check_crud if policy_missed? && last_key_crud?
+      @result = check_waterfall_rules if policy_missed? && waterfall_rules?
 
       validate_result
     end
@@ -44,27 +45,19 @@ module Passpartu
       false
     end
 
-    def check_policy
-      @result = waterfall_rules? ? check_waterfall_rules : simple_check
-    end
-
-    def simple_check
+    def default_check
       loop_hash = policy_hash.dup
       role_and_keys.each_with_index do |key, index|
-        if loop_hash[key].is_a? Hash
-          loop_hash = loop_hash[key]
-          next
-        elsif last?(index)
-          @result = loop_hash[key]
-        end
-        break
+        return @result = loop_hash[key] if last?(index)
+        return nil unless loop_hash[key].is_a?(Hash)
+
+        loop_hash = loop_hash[key]
       end
-      @result
     end
 
     def check_crud
       change_crud_key
-      check_policy
+      default_check
     end
 
     def change_crud_key

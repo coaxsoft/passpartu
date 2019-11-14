@@ -11,13 +11,9 @@ module Passpartu
     def call
       loop_hash = policy_hash.dup
       keys.each do |key|
-        if loop_hash[key].is_a? Hash
-          loop_hash = loop_hash[key]
-          next
-        else
-          @result = loop_hash[key]
-        end
-        break
+        return @result = loop_hash[key] unless loop_hash[key].is_a?(Hash)
+
+        loop_hash = loop_hash[key]
       end
       @result
     end
