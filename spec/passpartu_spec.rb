@@ -5,7 +5,6 @@ RSpec.describe Passpartu do
 
   context 'default policy' do
     it "set default policy file to './config/passpartu.yml'" do
-      Passpartu.configure {}
       expect(Passpartu.config.policy_file).to eq './config/passpartu.yml'
     end
 

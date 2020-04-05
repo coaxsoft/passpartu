@@ -201,4 +201,24 @@ RSpec.describe Passpartu::Verify do
       end
     end
   end
+
+  context 'check_waterfall' do
+    before do
+      Passpartu.configure { |config| config.check_waterfall = true }
+    end
+
+    it 'returns true for super_admin' do
+      expect(described_class.call(:super_admin, %i[key])).to eq true
+      expect(described_class.call(:super_admin, %i[nested key])).to eq true
+      expect(described_class.call(:super_admin, %i[deep nested key])).to eq true
+      expect(described_class.call(:super_admin, %i[very deep nested key])).to eq true
+    end
+
+    it 'returns false for super_looser' do
+      expect(described_class.call(:super_looser, %i[key])).to eq false
+      expect(described_class.call(:super_looser, %i[nested key])).to eq false
+      expect(described_class.call(:super_looser, %i[deep nested key])).to eq false
+      expect(described_class.call(:super_looser, %i[very deep nested key])).to eq false
+    end
+  end
 end

@@ -1,4 +1,4 @@
-# Passpartu v0.6.0 - [changelog](https://github.com/coaxsoft/passpartu/blob/master/CHANGELOG.md)
+# Passpartu v1.0.0 - [changelog](https://github.com/coaxsoft/passpartu/blob/master/CHANGELOG.md)
 
 Passpartu makes policies great again (works awesome with [Pundit](https://rubygems.org/gems/pundit)).
 
@@ -131,6 +131,37 @@ Check user roles AND policy rule
   # OR   
   user_agent.agent_can?(:orders, :edit, except: [:admin, :manager]) { user_agent.orders.include?(order) }
 ```
+
+#### Waterfall check
+Allow or restrict absolutely everything for particular role or/and particular domain.
+```ruby
+# ./config/initializers/passpartu.rb
+
+Passpartu.configure do |config|
+  config.check_waterfall = true
+end
+```
+
+```yml
+# ./config/passpartu.yml
+
+super_admin: true
+super_looser: false
+medium_looser:
+  orders:
+    create: true
+    delete: false
+  products: true
+```
+```ruby
+user_super_admin.can?(:do, :whatever, :want) # true
+user_super_loser.can?(:do, :whatever, :want) # false
+user_medium_loser.can?(:orders, :create) # true
+user_medium_loser.can?(:orders, :delete) # false
+user_medium_loser.can?(:products, :create) # true
+user_medium_loser.can?(:products, :create, :and_delete) # true
+```
+
 
 ##### Real life example
 You need to check custom rule for agent

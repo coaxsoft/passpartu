@@ -4,6 +4,7 @@ require_relative 'passpartu/patcher'
 require_relative 'passpartu/verify'
 require_relative 'passpartu/block_verify'
 require_relative 'passpartu/validate_result'
+require_relative 'passpartu/check_waterfall'
 require_relative 'passpartu/user' # for testing only
 
 module Passpartu
@@ -28,7 +29,7 @@ module Passpartu
   end
 
   class Config
-    attr_accessor :policy, :raise_policy_missed_error
+    attr_accessor :policy, :raise_policy_missed_error, :check_waterfall
     attr_reader :policy_file
 
     DEFAULT_POLICY_FILE = './config/passpartu.yml'.freeze
@@ -37,6 +38,7 @@ module Passpartu
       @policy_file = DEFAULT_POLICY_FILE
       @policy = YAML.load_file(policy_file) if File.exists?(policy_file)
       @raise_policy_missed_error = true
+      @check_waterfall = false
     end
 
     def policy_file=(file = nil)
