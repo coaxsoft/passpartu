@@ -12,6 +12,8 @@ module Passpartu
       @only = Array(only).map(&:to_s) if present?(only)
       @except = Array(exclusion).map(&:to_s) if present?(exclusion) && !@only
       @block = block
+
+      raise PolicyYmlNotFoundError if Passpartu.policy.nil?
     end
 
     def self.call(role, keys, only: nil, except: nil, skip: nil, &block)
