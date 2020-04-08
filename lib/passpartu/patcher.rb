@@ -1,7 +1,11 @@
+# frozen_string_literal: true
+
 module Passpartu
   class Patcher
     attr_reader :klass
     def initialize(klass)
+      raise PolicyYmlNotFoundError if Passpartu.policy.nil?
+
       @klass = klass
     end
 

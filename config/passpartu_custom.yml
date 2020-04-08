@@ -1,10 +1,10 @@
 admin:
   orders:
-    create: true
-    edit: true
-    delete: true
-  products:
     create: false
+    edit: false
+    delete: false
+  products:
+    create: true
     edit: true
     delete: true
   items:
@@ -18,11 +18,3 @@ manager:
     create: true
     edit: true
     delete: false
-
-super_admin: true
-super_looser: false
-medium_looser:
-  orders:
-    create: true
-    delete: false
-  products: true

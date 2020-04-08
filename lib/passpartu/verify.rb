@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 module Passpartu
   class Verify
-    CRUD_KEY = 'crud'.freeze
+    CRUD_KEY = 'crud'
 
     attr_reader :role, :keys, :result, :only, :except, :block
 
@@ -12,6 +14,8 @@ module Passpartu
       @only = Array(only).map(&:to_s) if present?(only)
       @except = Array(exclusion).map(&:to_s) if present?(exclusion) && !@only
       @block = block
+
+      raise PolicyYmlNotFoundError if Passpartu.policy.nil?
     end
 
     def self.call(role, keys, only: nil, except: nil, skip: nil, &block)
@@ -21,10 +25,17 @@ module Passpartu
     def call
       return false if role_ignore?
 
-      check_policy
-      check_crud if policy_missed? && last_key_crud?
+      check_waterfall_if
+      default_check
+      check_crud_if
 
       validate_result
+    rescue StandardError => e
+      if ['TrueClass does not have #dig method', 'FalseClass does not have #dig method'].include?(e.message)
+        raise WaterfallError.new "Looks like you want to use check_waterfall feature, but it's set to 'false'. Otherwise check your #{Passpartu.config.policy_file} for validness"
+      else
+        raise e
+      end
     end
 
     private
@@ -36,17 +47,17 @@ module Passpartu
       false
     end
 
-    def check_policy
+    def default_check
+      return unless policy_missed?
+
       @result = Passpartu.policy.dig(role, *keys)
     end
 
-    def check_crud
-      change_crud_key
-      check_policy
-    end
+    def check_crud_if
+      return unless policy_missed? && last_key_crud?
 
-    def change_crud_key
       @keys[-1] = CRUD_KEY
+      default_check
     end
 
     def policy_missed?
@@ -59,6 +70,12 @@ module Passpartu
 
     def last_key_crud?
       %w[create read update delete].include?(keys[-1])
+    end
+
+    def check_waterfall_if
+      return unless Passpartu.config.check_waterfall && policy_missed?
+
+      @result = Passpartu::CheckWaterfall.call(role, keys)
     end
 
     def blank?(item)
