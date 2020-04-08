@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Passpartu
   class BlockVerify < ::Passpartu::Verify
     def call

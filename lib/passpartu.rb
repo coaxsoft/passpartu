@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'passpartu/version'
 require 'yaml'
 require_relative 'passpartu/patcher'
@@ -10,6 +12,7 @@ require_relative 'passpartu/user' # for testing only
 module Passpartu
   class Error < StandardError; end
   class PolicyYmlNotFoundError < StandardError; end
+  class WaterfallError < StandardError; end
 
   def self.included(policy_class)
     Passpartu::Patcher.call(policy_class)
@@ -32,11 +35,11 @@ module Passpartu
     attr_accessor :policy, :raise_policy_missed_error, :check_waterfall
     attr_reader :policy_file
 
-    DEFAULT_POLICY_FILE = './config/passpartu.yml'.freeze
+    DEFAULT_POLICY_FILE = './config/passpartu.yml'
 
     def initialize
       @policy_file = DEFAULT_POLICY_FILE
-      @policy = YAML.load_file(policy_file) if File.exists?(policy_file)
+      @policy = YAML.load_file(policy_file) if File.exist?(policy_file)
       @raise_policy_missed_error = true
       @check_waterfall = false
     end
@@ -44,7 +47,7 @@ module Passpartu
     def policy_file=(file = nil)
       @policy_file = file || DEFAULT_POLICY_FILE
 
-      raise PolicyYmlNotFoundError unless File.exists?(policy_file)
+      raise PolicyYmlNotFoundError unless File.exist?(policy_file)
 
       @policy = YAML.load_file(policy_file)
     end

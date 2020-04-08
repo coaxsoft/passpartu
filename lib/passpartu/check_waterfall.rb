@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Passpartu
   class CheckWaterfall
     attr_reader :waterfall, :policy_hash
@@ -12,21 +14,15 @@ module Passpartu
 
     def call
       patch_boolean_classes
-      # while true works faster than loop
-      while waterfall.size.positive? do
-        return reset_boolean_classes && @result if [TrueClass, FalseClass].include?((@result = policy_hash.dig(*waterfall)).class)
-
-
-        waterfall.pop
-      end
-
+      @result = policy_hash.dig(*waterfall)
       reset_boolean_classes
-      nil
+
+      @result
     end
 
     def patch_boolean_classes
-      TrueClass.define_method(:dig) { |*keys| true }
-      FalseClass.define_method(:dig) { |*keys| false }
+      TrueClass.define_method(:dig) { |*_keys| true }
+      FalseClass.define_method(:dig) { |*_keys| false }
     end
 
     def reset_boolean_classes
