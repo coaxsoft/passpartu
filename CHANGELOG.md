@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.1] - 2020-04-05
+### Fixed
+Set raise_policy_missed_error to false if check_waterfall == true
+
 ## [1.0.0] - 2020-04-05
 ### Added
 #### Waterfall check
