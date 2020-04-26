@@ -67,4 +67,47 @@ RSpec.describe Passpartu do
       expect { Passpartu.configure { |config| config.policy_file = './not_config/not_policy.yml' } }.to raise_error(Passpartu::PolicyYmlNotFoundError)
     end
   end
+
+  context 'set check_waterfall' do
+    context 'to be true' do
+      before do
+        Passpartu.config.raise_policy_missed_error = true
+      end
+      it 'set raise_policy_missed_error to false' do
+        expect(Passpartu.config.raise_policy_missed_error).to eq(true)
+
+        Passpartu.configure { |config| config.check_waterfall = true }
+
+        expect(Passpartu.config.raise_policy_missed_error).to eq(false)
+      end
+    end
+
+    context 'to be false' do
+      context 'raise_policy_missed_error: true' do
+        before do
+          Passpartu.config.raise_policy_missed_error = true
+        end
+        it 'does not change raise policy missed error' do
+          expect(Passpartu.config.raise_policy_missed_error).to eq(true)
+
+          Passpartu.configure { |config| config.check_waterfall = true }
+
+          expect(Passpartu.config.raise_policy_missed_error).to eq(false)
+        end
+      end
+
+      context 'raise_policy_missed_error: false' do
+        before do
+          Passpartu.config.raise_policy_missed_error = false
+        end
+        it 'does not change raise policy missed error' do
+          expect(Passpartu.config.raise_policy_missed_error).to eq(false)
+
+          Passpartu.configure { |config| config.check_waterfall = false }
+
+          expect(Passpartu.config.raise_policy_missed_error).to eq(false)
+        end
+      end
+    end
+  end
 end

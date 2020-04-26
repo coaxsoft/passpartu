@@ -32,8 +32,8 @@ module Passpartu
   end
 
   class Config
-    attr_accessor :policy, :raise_policy_missed_error, :check_waterfall
-    attr_reader :policy_file
+    attr_accessor :policy, :raise_policy_missed_error
+    attr_reader :policy_file, :check_waterfall
 
     DEFAULT_POLICY_FILE = './config/passpartu.yml'
 
@@ -50,6 +50,13 @@ module Passpartu
       raise PolicyYmlNotFoundError unless File.exist?(policy_file)
 
       @policy = YAML.load_file(policy_file)
+    end
+
+    def check_waterfall=(value)
+      @check_waterfall = value
+      @raise_policy_missed_error = false if @check_waterfall
+
+      @check_waterfall
     end
   end
 

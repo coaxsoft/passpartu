@@ -1,4 +1,4 @@
-# Passpartu v1.0.0 - [changelog](https://github.com/coaxsoft/passpartu/blob/master/CHANGELOG.md)
+# Passpartu v1.0.1 - [changelog](https://github.com/coaxsoft/passpartu/blob/master/CHANGELOG.md)
 
 Passpartu makes policies great again (works awesome with [Pundit](https://rubygems.org/gems/pundit)).
 
