@@ -203,8 +203,10 @@ RSpec.describe Passpartu::Verify do
   end
 
   context 'check_waterfall' do
-    before do
-      Passpartu.configure { |config| config.check_waterfall = true }
+    around(:each) do |example|
+      Passpartu.config.check_waterfall = true
+      example.run
+      Passpartu.config.check_waterfall = false
     end
 
     it 'returns true for super_admin' do
@@ -219,6 +221,76 @@ RSpec.describe Passpartu::Verify do
       expect(described_class.call(:super_looser, %i[nested key])).to eq false
       expect(described_class.call(:super_looser, %i[deep nested key])).to eq false
       expect(described_class.call(:super_looser, %i[very deep nested key])).to eq false
+    end
+
+      around(:each) do |example|
+        Passpartu.config.check_waterfall = true
+        example.run
+        Passpartu.config.check_waterfall = false
+      end
+
+    context 'for admin' do
+      let(:role) { 'admin'}
+
+      it 'returns true for existed key' do
+        expect(described_class.call(role, %w[orders create])).to eq true
+      end
+
+      it 'returns false for existed key' do
+        expect(described_class.call(role, %w[products create])).to eq false
+      end
+
+      it 'returns false for non existed key' do
+        expect(described_class.call(role, %w[products computers create])).to eq false
+      end
+    end
+
+    context 'for super_admin' do
+      let(:role) { 'super_admin'}
+
+      it 'returns true for existed key' do
+        expect(described_class.call(role, %w[orders create])).to eq true
+      end
+
+      it 'returns true for existed key' do
+        expect(described_class.call(role, %w[products create])).to eq true
+      end
+
+      it 'returns nil for non existed key' do
+        expect(described_class.call(role, %w[products computers create])).to eq true
+      end
+    end
+
+    context 'for super_looser' do
+      let(:role) { 'super_looser'}
+
+      it 'returns false for existed key' do
+        expect(described_class.call(role, %w[orders create])).to eq false
+      end
+
+      it 'returns false for existed key' do
+        expect(described_class.call(role, %w[products create])).to eq false
+      end
+
+      it 'returns false for non existed key' do
+        expect(described_class.call(role, %w[products computers create])).to eq false
+      end
+    end
+
+    context 'for medium_looser' do
+      let(:role) { 'medium_looser'}
+
+      it 'returns true for existed key' do
+        expect(described_class.call(role, %w[orders create])).to eq true
+      end
+
+      it 'returns false for existed key' do
+        expect(described_class.call(role, %w[orders delete])).to eq false
+      end
+
+      it 'returns true for non existed key' do
+        expect(described_class.call(role, %w[products computers create])).to eq true
+      end
     end
   end
 end
