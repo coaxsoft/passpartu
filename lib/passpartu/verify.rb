@@ -25,7 +25,6 @@ module Passpartu
     def call
       return false if role_ignore?
 
-      check_waterfall_if
       default_check
       check_crud_if
 
@@ -70,12 +69,6 @@ module Passpartu
 
     def last_key_crud?
       %w[create read update delete].include?(keys[-1])
-    end
-
-    def check_waterfall_if
-      return unless Passpartu.config.check_waterfall && policy_missed?
-
-      @result = Passpartu::CheckWaterfall.call(role, keys)
     end
 
     def blank?(item)

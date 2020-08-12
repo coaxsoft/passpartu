@@ -1,8 +1,9 @@
-# Passpartu v1.0.1 - [changelog](https://github.com/coaxsoft/passpartu/blob/master/CHANGELOG.md)
+# Passpartu v1.0.2 - [changelog](https://github.com/coaxsoft/passpartu/blob/master/CHANGELOG.md)
 
 Passpartu makes policies great again (works awesome with [Pundit](https://rubygems.org/gems/pundit)).
 
 Instead of this:
+
 ```ruby
 class PostPolicy < ApplicationPolicy
   def update?
@@ -12,6 +13,7 @@ end
 ```
 
 just this:
+
 ```ruby
 class PostPolicy < ApplicationPolicy
   def update?
@@ -19,19 +21,24 @@ class PostPolicy < ApplicationPolicy
   end
 end
 ```
+
 ## Usage
+
 Include `Passpartu` into your policy model.
+
 ```ruby
 class User
   include Passpartu
 end
 ```
+
 NOTE: Your `User` model must respond to `role` method that returns a string or a symbol!
 
 Keep all your policies in one place.
 Create `./config/passpartu.yml` and start writing your policies.
 
 #### Example of `passpartu.yml`
+
 ```yml
 # ./config/passpartu.yml
 manager: &manager
@@ -65,18 +72,25 @@ admin:
 ```
 
 ## Features
+
 #### CRUD
+
 It's possible to use `crud` key to set values for `create`, `read`, `update`, `delete` at once.
 `create`, `read`, `update`, `delete` has higher priority than `crud`
+
 In case `crud: true` and `delete: false` - result `false` 
 
+
 #### Only
+
 It's possible to include specific roles to checks
+
 ```ruby
     user_admin.can?(:orders, :edit) # check policy for admin and returns true if policy true
     user_admin.can?(:orders, :edit, only: :admin) # returns true because the user is an admin and we included only admin
     user_manager.can?(:orders, :edit, only: :admin) # returns false because user is manager and we included only admin
 ```
+
 It's possible to give an array as only attribute
 
 ```ruby
@@ -85,18 +99,21 @@ It's possible to give an array as only attribute
 ```
 
 Note: `only` has higher priority than `except/skip`. Do not use both.
+
 ```ruby
   user_admin.can?(:orders, :edit, only: :admin, except: :admin) # returns true
 ```
 
-
 #### Skip (except)
+
 It's possible to exclude roles from checks
+
 ```ruby
     user_admin.can?(:orders, :edit) # check policy for admin and returns true if policy true
     user_admin.can?(:orders, :edit, except: :admin) # returns false because user is admin and we excluded admin
     
 ```
+
 It's possible to give an array as except attribute
 
 ```ruby
@@ -107,6 +124,7 @@ It's possible to give an array as except attribute
 `skip` alias to `except`
 
 Note: `expect` has higher priority than `skip`. Do not use both.
+
 ```ruby
   user_agent.can?(:orders, :edit, except: [:admin, :manager]) { user_agent.orders.include?(order) }
   # equals to
@@ -114,7 +132,9 @@ Note: `expect` has higher priority than `skip`. Do not use both.
 ```
 
 #### Per role methods
+
 Check user roles AND policy rule
+
 ```ruby
     # check if user admin AND returns true if policy true
     user_admin.admin_can?(:orders, :edit) # true
@@ -124,6 +144,7 @@ Check user roles AND policy rule
 ```
 
 #### Code blocks
+
 ```ruby
   # check rules as usual AND code in the block   
   user_agent.can?(:orders, :edit, except: [:admin, :manager]) { user_agent.orders.include?(order) }
@@ -133,7 +154,9 @@ Check user roles AND policy rule
 ```
 
 #### Waterfall check
+
 Allow or restrict absolutely everything for particular role or/and particular domain.
+
 ```ruby
 # ./config/initializers/passpartu.rb
 
@@ -153,6 +176,7 @@ medium_looser:
     delete: false
   products: true
 ```
+
 ```ruby
 user_super_admin.can?(:do, :whatever, :want) # true
 user_super_loser.can?(:do, :whatever, :want) # false
@@ -161,10 +185,10 @@ user_medium_loser.can?(:orders, :delete) # false
 user_medium_loser.can?(:products, :create) # true
 user_medium_loser.can?(:products, :create, :and_delete) # true
 ```
-
-
 ##### Real life example
+
 You need to check custom rule for agent
+
 ```yml
 # ./config/passpartu.yml
 
@@ -202,9 +226,13 @@ You can configure Passpartu by creating `./config/initializers/passpartu.rb`.
 Passpartu.configure do |config|
   config.policy_file = './config/passpartu.yml'
   config.raise_policy_missed_error = true
+  config.check_waterfall = false
 end
+
 ```
+
 ### Raise policy missed errors
+
 By default Passpartu will raise an PolicyMissedError if policy is missed in `passpartu.yml`. In initializer set  `config.raise_policy_missed_error = false` in order to return `false` in case when policy is not defined. This is a good approach to write only "positive" policies (only true) and automatically restricts everything that is not mentioned in `passpartu.yml`
 
 ## Installation
@@ -244,4 +272,5 @@ The gem is available as open source under the terms of the [MIT License](https:/
 Everyone interacting in the Passpartu project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/coaxsoft/passpartu/blob/master/CODE_OF_CONDUCT.md).
 
 ## Idea
+
 Initially designed and created by [Orest Falchuk](https://github.com/OrestF)

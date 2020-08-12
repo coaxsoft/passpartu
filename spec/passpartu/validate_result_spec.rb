@@ -1,6 +1,9 @@
 RSpec.describe Passpartu::ValidateResult do
   describe '#call' do
     context 'with raise_policy_missed_error: true' do
+      before do
+        Passpartu.config.raise_policy_missed_error = true
+      end
       context 'with true' do
         it 'returns true' do
           expect(described_class.call(true)).to eq true
