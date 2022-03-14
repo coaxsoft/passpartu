@@ -9,21 +9,21 @@ RSpec.describe Passpartu::Verify do
     context 'Orders', resource: :orders do
       context 'for admin', role: :admin do
         it 'returns true for orders create', action: :create do
-          is_expected.to be_truthy
+          is_expected.to eq true
         end
 
         it 'returns true for orders delete', action: :delete do
-          is_expected.to be_truthy
+          is_expected.to eq true
         end
       end
 
       context 'for manger', role: :manager do
         it 'returns true for orders create', action: :create do
-          is_expected.to be_truthy
+          is_expected.to eq true
         end
 
         it 'returns true for orders delete', action: :delete do
-          is_expected.to be_falsey
+          is_expected.to eq false
         end
       end
     end
@@ -32,19 +32,19 @@ RSpec.describe Passpartu::Verify do
       context 'for admin', role: :admin do
         context 'Items', resource: :items do
           it 'returns true for orders create', action: :create do
-            is_expected.to be_truthy
+            is_expected.to eq true
           end
 
           it 'returns true for orders read', action: :read do
-            is_expected.to be_truthy
+            is_expected.to eq true
           end
 
           it 'returns true for orders update', action: :update do
-            is_expected.to be_truthy
+            is_expected.to eq true
           end
 
           it 'returns true for orders delete', action: :delete do
-            is_expected.to be_truthy
+            is_expected.to eq true
           end
         end
       end
@@ -57,19 +57,19 @@ RSpec.describe Passpartu::Verify do
         context 'for admin', role: :admin do
           context 'Items', resource: :items do
             it 'returns true for orders create', action: :create do
-              is_expected.to be_truthy
+              is_expected.to eq true
             end
 
             it 'returns false for orders read', action: :read do
-              is_expected.to be_truthy
+              is_expected.to eq true
             end
 
             it 'returns true for orders update', action: :update do
-              is_expected.to be_truthy
+              is_expected.to eq true
             end
 
             it 'overrides crud true and returns false for orders delete', action: :delete do
-              is_expected.to be_falsey
+              is_expected.to eq false
             end
 
             context 'misspelled' do
@@ -95,19 +95,19 @@ RSpec.describe Passpartu::Verify do
                 before(:each) { Passpartu.config.raise_policy_missed_error = false }
 
                 it 'returns false for orders create', action: :crea do
-                  is_expected.to be_falsey
+                  is_expected.to eq false
                 end
 
                 it 'returns false for orders read', action: :rea do
-                  is_expected.to be_falsey
+                  is_expected.to eq false
                 end
 
                 it 'returns false for orders update', action: :upde do
-                  is_expected.to be_falsey
+                  is_expected.to eq false
                 end
 
                 it 'returns false for orders delete', action: :dele do
-                  is_expected.to be_falsey
+                  is_expected.to eq false
                 end
               end
             end
@@ -122,10 +122,10 @@ RSpec.describe Passpartu::Verify do
         let(:except) { :admin }
 
         it 'returns false for admin and true for manager' do
-          expect(described_class.call(role, %i[orders create])).to be_truthy
+          expect(described_class.call(role, %i[orders create])).to eq true
 
-          expect(described_class.call(role, %i[orders create], except: except)).to be_falsey
-          expect(described_class.call(:manager, %i[orders create], except: except)).to be_truthy
+          expect(described_class.call(role, %i[orders create], except: except)).to eq false
+          expect(described_class.call(:manager, %i[orders create], except: except)).to eq true
         end
       end
 
@@ -133,11 +133,11 @@ RSpec.describe Passpartu::Verify do
         let(:except) { %i[admin manager] }
 
         it 'returns false for admin and manager' do
-          expect(described_class.call(:admin, %i[orders create])).to be_truthy
-          expect(described_class.call(:manager, %i[orders create])).to be_truthy
+          expect(described_class.call(:admin, %i[orders create])).to eq true
+          expect(described_class.call(:manager, %i[orders create])).to eq true
 
-          expect(described_class.call(:admin, %i[orders create], except: except)).to be_falsey
-          expect(described_class.call(:manager, %i[orders create], except: except)).to be_falsey
+          expect(described_class.call(:admin, %i[orders create], except: except)).to eq false
+          expect(described_class.call(:manager, %i[orders create], except: except)).to eq false
         end
       end
     end
@@ -148,10 +148,10 @@ RSpec.describe Passpartu::Verify do
         let(:only) { :admin }
 
         it 'returns true for admin and false for manager' do
-          expect(described_class.call(role, %i[orders create])).to be_truthy
+          expect(described_class.call(role, %i[orders create])).to eq true
 
-          expect(described_class.call(role, %i[orders create], only: only)).to be_truthy
-          expect(described_class.call(:manager, %i[orders create], only: only)).to be_falsey
+          expect(described_class.call(role, %i[orders create], only: only)).to eq true
+          expect(described_class.call(:manager, %i[orders create], only: only)).to eq false
         end
       end
 
@@ -159,12 +159,12 @@ RSpec.describe Passpartu::Verify do
         let(:only) { %i[admin manager] }
 
         it 'returns false for admin and manager' do
-          expect(described_class.call(:admin, %i[orders create])).to be_truthy
-          expect(described_class.call(:manager, %i[orders create])).to be_truthy
+          expect(described_class.call(:admin, %i[orders create])).to eq true
+          expect(described_class.call(:manager, %i[orders create])).to eq true
 
-          expect(described_class.call(:admin, %i[orders create], only: only)).to be_truthy
-          expect(described_class.call(:manager, %i[orders create], only: only)).to be_truthy
-          expect(described_class.call(:worker, %i[orders create], only: only)).to be_falsey
+          expect(described_class.call(:admin, %i[orders create], only: only)).to eq true
+          expect(described_class.call(:manager, %i[orders create], only: only)).to eq true
+          expect(described_class.call(:worker, %i[orders create], only: only)).to eq false
         end
       end
     end
@@ -176,19 +176,19 @@ RSpec.describe Passpartu::Verify do
         let(:except) { :admin }
 
         it 'returns true for admin' do
-          expect(described_class.call(role, %i[orders create], only: only, except: except)).to be_truthy
+          expect(described_class.call(role, %i[orders create], only: only, except: except)).to eq true
         end
       end
 
       context 'admin and manger' do
         it 'returns true for admin and false for manager' do
-          expect(described_class.call(:admin, %i[orders create], only: :admin, except: :manager)).to be_truthy
-          expect(described_class.call(:manager, %i[orders create], only: :admin, except: :manager)).to be_falsey
+          expect(described_class.call(:admin, %i[orders create], only: :admin, except: :manager)).to eq true
+          expect(described_class.call(:manager, %i[orders create], only: :admin, except: :manager)).to eq false
         end
 
         it 'returns true for admin and manager' do
-          expect(described_class.call(:admin, %i[orders create], only: [:admin, :manager], except: :manager)).to be_truthy
-          expect(described_class.call(:manager, %i[orders create], only: [:admin, :manager], except: :manager)).to be_truthy
+          expect(described_class.call(:admin, %i[orders create], only: [:admin, :manager], except: :manager)).to eq true
+          expect(described_class.call(:manager, %i[orders create], only: [:admin, :manager], except: :manager)).to eq true
         end
       end
     end
@@ -204,17 +204,17 @@ RSpec.describe Passpartu::Verify do
     end
 
     it 'returns true for super_admin' do
-      expect(described_class.call(:super_admin, %i[action])).to be_truthy
-      expect(described_class.call(:super_admin, %i[nested action])).to be_truthy
-      expect(described_class.call(:super_admin, %i[deep nested action])).to be_truthy
-      expect(described_class.call(:super_admin, %i[very deep nested action])).to be_truthy
+      expect(described_class.call(:super_admin, %i[action])).to eq true
+      expect(described_class.call(:super_admin, %i[nested action])).to eq true
+      expect(described_class.call(:super_admin, %i[deep nested action])).to eq true
+      expect(described_class.call(:super_admin, %i[very deep nested action])).to eq true
     end
 
     it 'returns false for super_looser' do
-      expect(described_class.call(:super_looser, %i[action])).to be_falsey
-      expect(described_class.call(:super_looser, %i[nested action])).to be_falsey
-      expect(described_class.call(:super_looser, %i[deep nested action])).to be_falsey
-      expect(described_class.call(:super_looser, %i[very deep nested action])).to be_falsey
+      expect(described_class.call(:super_looser, %i[action])).to eq false
+      expect(described_class.call(:super_looser, %i[nested action])).to eq false
+      expect(described_class.call(:super_looser, %i[deep nested action])).to eq false
+      expect(described_class.call(:super_looser, %i[very deep nested action])).to eq false
     end
 
     around(:each) do |example|
@@ -225,57 +225,57 @@ RSpec.describe Passpartu::Verify do
 
     context 'for admin', role: :admin do
       it 'returns true for existed action', resources: %i[orders], action: :create do
-        is_expected.to be_truthy
+        is_expected.to eq true
       end
 
       it 'returns false for existed action', resources: %i[products], action: :create do
-        is_expected.to be_falsey
+        is_expected.to eq false
       end
 
       it 'returns false for non existed action', resources: %i[products computers], action: :create do
-        is_expected.to be_falsey
+        is_expected.to eq false
       end
     end
 
     context 'for super_admin', role: :super_admin do
       it 'returns true for existed action', resources: %i[orders], action: :create do
-        is_expected.to be_truthy
+        is_expected.to eq true
       end
 
       it 'returns true for existed action', resources: %i[products], action: :create do
-        is_expected.to be_truthy
+        is_expected.to eq true
       end
 
       it 'returns nil for non existed action', resources: %i[products computers], action: :create do
-        is_expected.to be_truthy
+        is_expected.to eq true
       end
     end
 
     context 'for super_looser', role: :super_looser do
       it 'returns false for existed action', resources: %i[orders], action: :create do
-        is_expected.to be_falsey
+        is_expected.to eq false
       end
 
       it 'returns false for existed action', resources: %i[products], action: :create do
-        is_expected.to be_falsey
+        is_expected.to eq false
       end
 
       it 'returns false for non existed action', resources: %i[products computers], action: :create do
-        is_expected.to be_falsey
+        is_expected.to eq false
       end
     end
 
     context 'for medium_looser', role: :medium_looser do
       it 'returns true for existed action', action: :create do
-        is_expected.to be_truthy
+        is_expected.to eq true
       end
 
       it 'returns false for existed action', action: :delete do
-        is_expected.to be_falsey
+        is_expected.to eq false
       end
 
       it 'returns true for non existed key', resources: %i[products computers], action: :create do
-        is_expected.to be_truthy
+        is_expected.to eq true
       end
     end
   end
