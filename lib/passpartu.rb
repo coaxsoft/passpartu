@@ -13,21 +13,21 @@ module Passpartu
   class PolicyYmlNotFoundError < StandardError; end
   class WaterfallError < StandardError; end
 
-  def self.included(policy_class)
-    Passpartu::Patcher.call(policy_class)
-  end
-
-  def self.policy
-    config.policy
-  end
-
   class << self
     attr_accessor :config
-  end
 
-  def self.configure
-    self.config ||= Config.new
-    yield(config)
+    def included(policy_class)
+      Passpartu::Patcher.call(policy_class)
+    end
+
+    def policy
+      config.policy
+    end
+
+    def configure
+      self.config ||= Config.new
+      yield(config)
+    end
   end
 
   class Config
@@ -38,7 +38,7 @@ module Passpartu
 
     def initialize
       @policy_file = DEFAULT_POLICY_FILE
-      set_policy(YAML.load_file(policy_file)) if File.exist?(policy_file)
+      self.policy = YAML.load_file(policy_file) if File.exist?(policy_file)
       @raise_policy_missed_error = true
       @check_waterfall = false
     end
@@ -48,23 +48,23 @@ module Passpartu
 
       raise PolicyYmlNotFoundError unless File.exist?(policy_file)
 
-      set_policy(YAML.load_file(policy_file))
+      self.policy = YAML.load_file(policy_file)
     end
 
     def check_waterfall=(value)
       @check_waterfall = value
 
-      if @check_waterfall
-        @raise_policy_missed_error = false
-        set_policy(@policy)
+      @check_waterfall.tap do |check_waterfall|
+        if check_waterfall
+          @raise_policy_missed_error = false
+          self.policy = @policy
+        end
       end
-
-      @check_waterfall
     end
 
     private
 
-    def set_policy(value)
+    def policy=(value)
       @policy = patch_policy_booleans_if(value)
     end
 
@@ -73,11 +73,12 @@ module Passpartu
       return hash unless @check_waterfall
 
       hash.transform_values! do |value|
-        if value.is_a?(TrueClass)
+        case value
+        when true
           value.define_singleton_method(:dig) { |*_keys| true }
-        elsif value.is_a?(FalseClass)
+        when false
           value.define_singleton_method(:dig) { |*_keys| false }
-        elsif
+        else
           patch_policy_booleans_if(value)
         end
 

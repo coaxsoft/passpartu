@@ -3,6 +3,7 @@
 module Passpartu
   class Patcher
     attr_reader :klass
+
     def initialize(klass)
       raise PolicyYmlNotFoundError if Passpartu.policy.nil?
 
@@ -19,7 +20,7 @@ module Passpartu
           Passpartu::BlockVerify.call(role, keys, only: only, except: except, skip: skip, &block)
         end
 
-        Passpartu.policy.keys.each do |policy_role|
+        Passpartu.policy.each_key do |policy_role|
           define_method("#{policy_role}_can?") do |*keys, only: nil, except: nil, skip: nil, &block|
             role.to_s == policy_role && Passpartu::BlockVerify.call(role, keys,
                                                                     only: only,

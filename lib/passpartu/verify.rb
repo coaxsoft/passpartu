@@ -31,7 +31,8 @@ module Passpartu
       validate_result
     rescue StandardError => e
       if ['TrueClass does not have #dig method', 'FalseClass does not have #dig method'].include?(e.message)
-        raise WaterfallError.new "Looks like you want to use check_waterfall feature, but it's set to 'false'. Otherwise check your #{Passpartu.config.policy_file} for validness"
+        raise WaterfallError,
+              "Looks like you want to use check_waterfall feature, but it's set to 'false'. Otherwise check your #{Passpartu.config.policy_file} for validness"
       else
         raise e
       end
