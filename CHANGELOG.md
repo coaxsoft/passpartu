@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.3] - 2022-03-14
+
+### Improvements
+
+- Updated code blocks according to RuboCop
+- Optimized tests
+
 ## [1.0.2] - 2020-08-12
 
 ### Improvements
