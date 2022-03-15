@@ -8,6 +8,14 @@ require_relative 'passpartu/block_verify'
 require_relative 'passpartu/validate_result'
 require_relative 'passpartu/user' # for testing only
 
+module YAML
+  def self.properly_load_file(path)
+    YAML.load_file(path, aliases: true)
+  rescue ArgumentError
+    YAML.load_file(path)
+  end
+end
+
 module Passpartu
   class Error < StandardError; end
   class PolicyYmlNotFoundError < StandardError; end
@@ -38,7 +46,7 @@ module Passpartu
 
     def initialize
       @policy_file = DEFAULT_POLICY_FILE
-      self.policy = YAML.load_file(policy_file) if File.exist?(policy_file)
+      self.policy = YAML.properly_load_file(policy_file) if File.exist?(policy_file)
       @raise_policy_missed_error = true
       @check_waterfall = false
     end
@@ -48,7 +56,7 @@ module Passpartu
 
       raise PolicyYmlNotFoundError unless File.exist?(policy_file)
 
-      self.policy = YAML.load_file(policy_file)
+      self.policy = YAML.properly_load_file(policy_file)
     end
 
     def check_waterfall=(value)

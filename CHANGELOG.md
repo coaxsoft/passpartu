@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Improvements
 
+- Checked to support ruby v3.1.1
 - Updated code blocks according to RuboCop
 - Optimized tests
 
