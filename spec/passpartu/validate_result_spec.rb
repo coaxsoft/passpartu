@@ -1,27 +1,29 @@
+# frozen_string_literal: true
+
 RSpec.describe Passpartu::ValidateResult do
   describe '#call' do
-    subject { |ex|; described_class.call(ex.metadata[:result]) }
+    subject(:response) { |ex|; described_class.call(ex.metadata[:result]) }
 
     context 'with raise_policy_missed_error: true' do
       before { Passpartu.config.raise_policy_missed_error = true }
 
-      context 'with true', result: true do
-        it { is_expected.to eq true }
+      it 'with true', result: true do
+        expect(response).to be true
       end
 
-      context 'with false', result: false do
-        it { is_expected.to eq false }
+      it 'with false', result: false do
+        expect(response).to be false
       end
 
       context 'with hash', result: {} do
         it 'raises PolicyMissedError' do
-          expect { subject }.to raise_error described_class::PolicyMissedError
+          expect { response }.to raise_error described_class::PolicyMissedError
         end
       end
 
       context 'with nil', result: nil do
         it 'raises PolicyMissedError' do
-          expect { subject }.to raise_error described_class::PolicyMissedError
+          expect { response }.to raise_error described_class::PolicyMissedError
         end
       end
     end
@@ -29,20 +31,20 @@ RSpec.describe Passpartu::ValidateResult do
     context 'with raise_policy_missed_error: false' do
       before { Passpartu.config.raise_policy_missed_error = false }
 
-      context 'with true', result: true do
-        it { is_expected.to eq true }
+      it 'with true', result: true do
+        expect(response).to be true
       end
 
-      context 'with false', result: false do
-        it { is_expected.to eq false }
+      it 'with false', result: false do
+        expect(response).to be false
       end
 
-      context 'with hash', result: {} do
-        it { is_expected.to eq false }
+      it 'with hash', result: {} do
+        expect(response).to be false
       end
 
-      context 'with nil', result: nil do
-        it { is_expected.to eq false }
+      it 'with nil', result: nil do
+        expect(response).to be false
       end
     end
   end
