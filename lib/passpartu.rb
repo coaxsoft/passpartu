@@ -8,14 +8,6 @@ require_relative 'passpartu/block_verify'
 require_relative 'passpartu/validate_result'
 require_relative 'passpartu/user' # for testing only
 
-module YAML
-  def self.properly_load_file(path)
-    YAML.load_file(path, aliases: true)
-  rescue ArgumentError
-    YAML.load_file(path)
-  end
-end
-
 module Passpartu
   class Error < StandardError; end
   class PolicyYmlNotFoundError < StandardError; end
@@ -46,7 +38,7 @@ module Passpartu
 
     def initialize
       @policy_file = DEFAULT_POLICY_FILE
-      self.policy = YAML.properly_load_file(policy_file) if File.exist?(policy_file)
+      self.policy = load_policy_file(policy_file) if File.exist?(policy_file)
       @raise_policy_missed_error = true
       @check_waterfall = false
     end
@@ -56,7 +48,7 @@ module Passpartu
 
       raise PolicyYmlNotFoundError unless File.exist?(policy_file)
 
-      self.policy = YAML.properly_load_file(policy_file)
+      self.policy = load_policy_file(policy_file)
     end
 
     def check_waterfall=(value)
@@ -71,6 +63,10 @@ module Passpartu
     end
 
     private
+
+    def load_policy_file(path)
+      RUBY_VERSION.to_f >= 3.1 ? YAML.load_file(path, aliases: true) : YAML.load_file(path)
+    end
 
     def policy=(value)
       @policy = patch_policy_booleans_if(value)
@@ -102,8 +98,6 @@ module Passpartu
       !blank?(item)
     end
   end
-
-  configure {}
 end
 
 initializer = './config/initializers/passpartu.rb'
