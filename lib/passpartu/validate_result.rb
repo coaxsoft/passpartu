@@ -5,6 +5,7 @@ module Passpartu
     class PolicyMissedError < StandardError; end
 
     attr_reader :result
+
     def initialize(result)
       @result = result
     end
@@ -23,7 +24,7 @@ module Passpartu
     private
 
     def boolean?
-      [TrueClass, FalseClass].include?(result.class)
+      [true, false].include?(result)
     end
 
     def raise_error?

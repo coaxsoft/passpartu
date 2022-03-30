@@ -1,122 +1,118 @@
+# frozen_string_literal: true
+
 RSpec.describe Passpartu::Verify do
   describe '#call' do
+    subject(:response) do |ex|
+      described_class.call(ex.metadata[:role], [ex.metadata[:resource], ex.metadata[:action]])
+    end
+
     let(:policy_class) { Passpartu.config.policy_class }
 
-    before do
-      Passpartu.config.raise_policy_missed_error = true
-    end
+    before { Passpartu.config.raise_policy_missed_error = true }
 
-    context 'for admin' do
-      let(:role) { 'admin' }
+    context 'with Orders', resource: :orders do
+      context 'when admin', role: :admin do
+        it 'returns true for orders create', action: :create do
+          expect(response).to be true
+        end
 
-      it 'returns true for orders create' do
-        expect(described_class.call(role, %i[orders create])).to eq true
+        it 'returns true for orders delete', action: :delete do
+          expect(response).to be true
+        end
       end
 
-      it 'returns true for orders delete' do
-        expect(described_class.call(role, %i[orders delete])).to eq true
-      end
-    end
+      context 'when manger', role: :manager do
+        it 'returns true for orders create', action: :create do
+          expect(response).to be true
+        end
 
-    context 'for maanger' do
-      let(:role) { 'manager' }
-
-      it 'returns true for orders create' do
-        expect(described_class.call(role, %i[orders create])).to eq true
-      end
-
-      it 'returns true for orders delete' do
-        expect(described_class.call(role, %i[orders delete])).to eq false
+        it 'returns true for orders delete', action: :delete do
+          expect(response).to be false
+        end
       end
     end
 
-    context 'crud true' do
-      context 'for admin' do
-        let(:role) { 'admin' }
+    context 'when crud true' do
+      context 'when admin', role: :admin do
+        context 'with Items', resource: :items do
+          it 'returns true for orders create', action: :create do
+            expect(response).to be true
+          end
 
-        it 'returns true for orders create' do
-          expect(described_class.call(role, %i[items create])).to eq true
-        end
+          it 'returns true for orders read', action: :read do
+            expect(response).to be true
+          end
 
-        it 'returns true for orders read' do
-          expect(described_class.call(role, %i[items read])).to eq true
-        end
+          it 'returns true for orders update', action: :update do
+            expect(response).to be true
+          end
 
-        it 'returns true for orders update' do
-          expect(described_class.call(role, %i[items update])).to eq true
-        end
-
-        it 'returns true for orders delete' do
-          expect(described_class.call(role, %i[items delete])).to eq true
+          it 'returns true for orders delete', action: :delete do
+            expect(response).to be true
+          end
         end
       end
 
-      context 'read false' do
-        before(:each) do
-          Passpartu.policy['admin']['items']['delete'] = false
-        end
+      context 'when read false' do
+        before { Passpartu.policy['admin']['items']['delete'] = false }
 
-        after do
-          Passpartu.configure {}
-        end
+        after { Passpartu.configure {} }
 
-        context 'for admin' do
-          let(:role) { 'admin' }
-
-          it 'returns true for orders create' do
-            expect(described_class.call(role, %i[items create])).to eq true
-          end
-
-          it 'returns false for orders read' do
-            expect(described_class.call(role, %i[items read])).to eq true
-          end
-
-          it 'returns true for orders update' do
-            expect(described_class.call(role, %i[items update])).to eq true
-          end
-
-          it 'overrides crud true and returns false for orders delete' do
-            expect(described_class.call(role, %i[items delete])).to eq false
-          end
-
-          context 'misspelled' do
-            context 'raise policy_missed_error true' do
-              it 'raises an error if its not crud action' do
-                expect { described_class.call(role, %i[items crea]) }.to raise_error Passpartu::ValidateResult::PolicyMissedError
-              end
-
-              it 'raises an error if its not crud action' do
-                expect { described_class.call(role, %i[items rea]) }.to raise_error Passpartu::ValidateResult::PolicyMissedError
-              end
-
-              it 'raises an error if its not crud action' do
-                expect { described_class.call(role, %i[items upde]) }.to raise_error Passpartu::ValidateResult::PolicyMissedError
-              end
-
-              it 'raises an error if its not crud action' do
-                expect { described_class.call(role, %i[items dele]) }.to raise_error Passpartu::ValidateResult::PolicyMissedError
-              end
+        context 'when admin', role: :admin do
+          context 'with Items', resource: :items do
+            it 'returns true for orders create', action: :create do
+              expect(response).to be true
             end
 
-            context 'raise policy_missed_error false' do
-              before(:each) do
-                Passpartu.config.raise_policy_missed_error = false
+            it 'returns false for orders read', action: :read do
+              expect(response).to be true
+            end
+
+            it 'returns true for orders update', action: :update do
+              expect(response).to be true
+            end
+
+            it 'overrides crud true and returns false for orders delete', action: :delete do
+              expect(response).to be false
+            end
+
+            context 'with misspelled' do
+              context 'when raise policy_missed_error true' do
+                it 'raises an error if its not crud action', action: :crea do
+                  expect { response }.to raise_error Passpartu::ValidateResult::PolicyMissedError
+                end
+
+                it 'raises an error if its not crud action', action: :rea do
+                  expect { response }.to raise_error Passpartu::ValidateResult::PolicyMissedError
+                end
+
+                it 'raises an error if its not crud action', action: :upde do
+                  expect { response }.to raise_error Passpartu::ValidateResult::PolicyMissedError
+                end
+
+                it 'raises an error if its not crud action', action: :dele do
+                  expect { response }.to raise_error Passpartu::ValidateResult::PolicyMissedError
+                end
               end
 
-              it 'returns false for orders create' do
-                expect(described_class.call(role, %i[items crea])).to eq false
-              end
+              context 'when raise policy_missed_error false' do
+                before { Passpartu.config.raise_policy_missed_error = false }
 
-              it 'returns false for orders read' do
-                expect(described_class.call(role, %i[items rea])).to eq false
-              end
+                it 'returns false for orders create', action: :crea do
+                  expect(response).to be false
+                end
 
-              it 'returns false for orders update' do
-                expect(described_class.call(role, %i[items upde])).to eq false
-              end
+                it 'returns false for orders read', action: :rea do
+                  expect(response).to be false
+                end
 
-              it 'returns false for orders delete' do
-                expect(described_class.call(role, %i[items dele])).to eq false
+                it 'returns false for orders update', action: :upde do
+                  expect(response).to be false
+                end
+
+                it 'returns false for orders delete', action: :dele do
+                  expect(response).to be false
+                end
               end
             end
           end
@@ -124,172 +120,163 @@ RSpec.describe Passpartu::Verify do
       end
     end
 
-    context 'expect param' do
-      context 'admin' do
-        let(:role) { 'admin' }
+    context 'with expect param' do
+      context 'when admin' do
+        let(:role) { :admin }
         let(:except) { :admin }
 
         it 'returns false for admin and true for manager' do
-          expect(described_class.call(role, %i[orders create])).to eq true
+          expect(described_class.call(role, %i[orders create])).to be true
 
-          expect(described_class.call(role, %i[orders create], except: except)).to eq false
-          expect(described_class.call(:manager, %i[orders create], except: except)).to eq true
+          expect(described_class.call(role, %i[orders create], except: except)).to be false
+          expect(described_class.call(:manager, %i[orders create], except: except)).to be true
         end
       end
 
-      context 'admin and manger' do
-        let(:except) { [:admin, :manager] }
+      context 'when admin and manger' do
+        let(:except) { %i[admin manager] }
 
         it 'returns false for admin and manager' do
-          expect(described_class.call(:admin, %i[orders create])).to eq true
-          expect(described_class.call(:manager, %i[orders create])).to eq true
+          expect(described_class.call(:admin, %i[orders create])).to be true
+          expect(described_class.call(:manager, %i[orders create])).to be true
 
-          expect(described_class.call(:admin, %i[orders create], except: except)).to eq false
-          expect(described_class.call(:manager, %i[orders create], except: except)).to eq false
+          expect(described_class.call(:admin, %i[orders create], except: except)).to be false
+          expect(described_class.call(:manager, %i[orders create], except: except)).to be false
         end
       end
     end
 
-    context 'only param' do
-      context 'admin' do
-        let(:role) { 'admin' }
+    context 'with only param' do
+      context 'when admin' do
+        let(:role) { :admin }
         let(:only) { :admin }
 
         it 'returns true for admin and false for manager' do
-          expect(described_class.call(role, %i[orders create])).to eq true
+          expect(described_class.call(role, %i[orders create])).to be true
 
-          expect(described_class.call(role, %i[orders create], only: only)).to eq true
-          expect(described_class.call(:manager, %i[orders create], only: only)).to eq false
+          expect(described_class.call(role, %i[orders create], only: only)).to be true
+          expect(described_class.call(:manager, %i[orders create], only: only)).to be false
         end
       end
 
-      context 'admin and manger' do
-        let(:only) { [:admin, :manager] }
+      context 'when admin and manger' do
+        let(:only) { %i[admin manager] }
 
         it 'returns false for admin and manager' do
-          expect(described_class.call(:admin, %i[orders create])).to eq true
-          expect(described_class.call(:manager, %i[orders create])).to eq true
+          expect(described_class.call(:admin, %i[orders create])).to be true
+          expect(described_class.call(:manager, %i[orders create])).to be true
 
-          expect(described_class.call(:admin, %i[orders create], only: only)).to eq true
-          expect(described_class.call(:manager, %i[orders create], only: only)).to eq true
-          expect(described_class.call(:worker, %i[orders create], only: only)).to eq false
+          expect(described_class.call(:admin, %i[orders create], only: only)).to be true
+          expect(described_class.call(:manager, %i[orders create], only: only)).to be true
+          expect(described_class.call(:worker, %i[orders create], only: only)).to be false
         end
       end
     end
 
-    context 'only & except param' do
-      context 'admin' do
-        let(:role) { 'admin' }
+    context 'when only & except param' do
+      context 'when admin' do
+        let(:role) { :admin }
         let(:only) { :admin }
         let(:except) { :admin }
 
         it 'returns true for admin' do
-          expect(described_class.call(role, %i[orders create], only: only, except: except)).to eq true
+          expect(described_class.call(role, %i[orders create], only: only, except: except)).to be true
         end
       end
 
-      context 'admin and manger' do
+      context 'when admin and manger' do
         it 'returns true for admin and false for manager' do
-          expect(described_class.call(:admin, %i[orders create], only: :admin, except: :manager)).to eq true
-          expect(described_class.call(:manager, %i[orders create], only: :admin, except: :manager)).to eq false
+          expect(described_class.call(:admin, %i[orders create], only: :admin, except: :manager)).to be true
+          expect(described_class.call(:manager, %i[orders create], only: :admin, except: :manager)).to be false
         end
 
         it 'returns true for admin and manager' do
-          expect(described_class.call(:admin, %i[orders create], only: [:admin, :manager], except: :manager)).to eq true
-          expect(described_class.call(:manager, %i[orders create], only: [:admin, :manager], except: :manager)).to eq true
+          expect(described_class.call(:admin, %i[orders create], only: %i[admin manager], except: :manager)).to be true
+          expect(described_class.call(:manager, %i[orders create], only: %i[admin manager],
+                                                                   except: :manager)).to be true
         end
       end
     end
   end
 
-  context 'check_waterfall' do
-    around(:each) do |example|
+  context 'with check_waterfall' do
+    subject(:response) do |ex|
+      described_class.call(ex.metadata[:role], [*ex.metadata[:resources] || :orders, ex.metadata[:action]])
+    end
+
+    around do |example|
       Passpartu.config.check_waterfall = true
       example.run
       Passpartu.config.check_waterfall = false
     end
 
     it 'returns true for super_admin' do
-      expect(described_class.call(:super_admin, %i[key])).to eq true
-      expect(described_class.call(:super_admin, %i[nested key])).to eq true
-      expect(described_class.call(:super_admin, %i[deep nested key])).to eq true
-      expect(described_class.call(:super_admin, %i[very deep nested key])).to eq true
+      expect(described_class.call(:super_admin, %i[action])).to be true
+      expect(described_class.call(:super_admin, %i[nested action])).to be true
+      expect(described_class.call(:super_admin, %i[deep nested action])).to be true
+      expect(described_class.call(:super_admin, %i[very deep nested action])).to be true
     end
 
     it 'returns false for super_looser' do
-      expect(described_class.call(:super_looser, %i[key])).to eq false
-      expect(described_class.call(:super_looser, %i[nested key])).to eq false
-      expect(described_class.call(:super_looser, %i[deep nested key])).to eq false
-      expect(described_class.call(:super_looser, %i[very deep nested key])).to eq false
+      expect(described_class.call(:super_looser, %i[action])).to be false
+      expect(described_class.call(:super_looser, %i[nested action])).to be false
+      expect(described_class.call(:super_looser, %i[deep nested action])).to be false
+      expect(described_class.call(:super_looser, %i[very deep nested action])).to be false
     end
 
-      around(:each) do |example|
-        Passpartu.config.check_waterfall = true
-        example.run
-        Passpartu.config.check_waterfall = false
+    context 'when admin', role: :admin do
+      it 'returns true for existed action', resources: %i[orders], action: :create do
+        expect(response).to be true
       end
 
-    context 'for admin' do
-      let(:role) { 'admin'}
-
-      it 'returns true for existed key' do
-        expect(described_class.call(role, %w[orders create])).to eq true
+      it 'returns false for existed action', resources: %i[products], action: :create do
+        expect(response).to be false
       end
 
-      it 'returns false for existed key' do
-        expect(described_class.call(role, %w[products create])).to eq false
-      end
-
-      it 'returns false for non existed key' do
-        expect(described_class.call(role, %w[products computers create])).to eq false
+      it 'returns false for non existed action', resources: %i[products computers], action: :create do
+        expect(response).to be false
       end
     end
 
-    context 'for super_admin' do
-      let(:role) { 'super_admin'}
-
-      it 'returns true for existed key' do
-        expect(described_class.call(role, %w[orders create])).to eq true
+    context 'when super_admin', role: :super_admin do
+      it 'returns true for existed action', resources: %i[orders], action: :create do
+        expect(response).to be true
       end
 
-      it 'returns true for existed key' do
-        expect(described_class.call(role, %w[products create])).to eq true
+      it 'returns true for existed action', resources: %i[products], action: :create do
+        expect(response).to be true
       end
 
-      it 'returns nil for non existed key' do
-        expect(described_class.call(role, %w[products computers create])).to eq true
+      it 'returns nil for non existed action', resources: %i[products computers], action: :create do
+        expect(response).to be true
       end
     end
 
-    context 'for super_looser' do
-      let(:role) { 'super_looser'}
-
-      it 'returns false for existed key' do
-        expect(described_class.call(role, %w[orders create])).to eq false
+    context 'when super_looser', role: :super_looser do
+      it 'returns false for existed action', resources: %i[orders], action: :create do
+        expect(response).to be false
       end
 
-      it 'returns false for existed key' do
-        expect(described_class.call(role, %w[products create])).to eq false
+      it 'returns false for existed action', resources: %i[products], action: :create do
+        expect(response).to be false
       end
 
-      it 'returns false for non existed key' do
-        expect(described_class.call(role, %w[products computers create])).to eq false
+      it 'returns false for non existed action', resources: %i[products computers], action: :create do
+        expect(response).to be false
       end
     end
 
-    context 'for medium_looser' do
-      let(:role) { 'medium_looser'}
-
-      it 'returns true for existed key' do
-        expect(described_class.call(role, %w[orders create])).to eq true
+    context 'when medium_looser', role: :medium_looser do
+      it 'returns true for existed action', action: :create do
+        expect(response).to be true
       end
 
-      it 'returns false for existed key' do
-        expect(described_class.call(role, %w[orders delete])).to eq false
+      it 'returns false for existed action', action: :delete do
+        expect(response).to be false
       end
 
-      it 'returns true for non existed key' do
-        expect(described_class.call(role, %w[products computers create])).to eq true
+      it 'returns true for non existed key', resources: %i[products computers], action: :create do
+        expect(response).to be true
       end
     end
   end

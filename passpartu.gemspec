@@ -38,7 +38,10 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
   spec.files = Dir['README.md', 'lib/**/*', 'lib/*', 'passpartu.gemspec']
 
-  spec.add_development_dependency 'bundler', '~> 2.0'
-  spec.add_development_dependency 'rake', '~> 12.3'
-  spec.add_development_dependency 'rspec', '~> 3.0'
+  spec.add_development_dependency 'bundler', '~> 2.3'
+  spec.add_development_dependency 'rake', '~> 13.0'
+  spec.add_development_dependency 'rspec', '~> 3.11'
+  spec.add_development_dependency 'codecov', '~> 0.6'
+  spec.add_development_dependency 'dotenv', '~> 2.7'
+  spec.add_development_dependency 'simplecov', '~> 0.21'
 end
