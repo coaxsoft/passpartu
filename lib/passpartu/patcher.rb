@@ -16,8 +16,11 @@ module Passpartu
 
     def call
       klass.class_eval do
+        # before_save :update_policy_hash if defined? :before_save
+
         define_method(:can?) do |*keys, only: nil, except: nil, skip: nil, &block|
-          Passpartu::BlockVerify.call(role, keys, only: only, except: except, skip: skip, &block)
+          p_hash = respond_to?(:policy_hash) ? nil : Passpartu.policy
+          Passpartu::BlockVerify.call(role, keys, only: only, except: except, skip: skip, policy_hash: p_hash, &block)
         end
 
         Passpartu.policy.each_key do |policy_role|
@@ -29,6 +32,12 @@ module Passpartu
                                                                     &block)
           end
         end
+
+        # def update_policy_hash
+        #   return unless respond_to?(:policy_hash) && respond_to?(:policy_hash=)
+        #
+        #   self.policy_hash = Passpartu.policy.slice(role.to_s)
+        # end
       end
     end
   end

@@ -6,7 +6,7 @@ require_relative 'passpartu/patcher'
 require_relative 'passpartu/verify'
 require_relative 'passpartu/block_verify'
 require_relative 'passpartu/validate_result'
-require_relative 'passpartu/user' # for testing only
+require_relative 'passpartu/test_user' # for testing only
 
 module Passpartu
   class Error < StandardError; end

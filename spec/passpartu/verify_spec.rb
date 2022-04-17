@@ -279,5 +279,54 @@ RSpec.describe Passpartu::Verify do
         expect(response).to be true
       end
     end
+
+    context 'with personal policy_hash' do
+      subject(:response) do |ex|
+        described_class.call(ex.metadata[:role], [ex.metadata[:resource], ex.metadata[:action]], policy_hash: policy_hash)
+      end
+      let(:policy_hash) do
+        {
+          custom_role: {
+            my_custom_resource: {
+              read: true,
+              create: false,
+              update: true,
+              delete: false
+            }
+          }
+        }
+      end
+      context 'for my_custom_resource', resource: :my_custom_resource do
+        context 'when admin', role: :custom_role do
+          it('returns true for orders read', action: :read) { expect(response).to be true }
+          it('returns true for orders create', action: :create) { expect(response).to be false }
+          it('returns true for orders update', action: :update) { expect(response).to be true }
+          it('returns true for orders delete', action: :delete) { expect(response).to be false }
+        end
+
+        context 'when admin', role: :other_custom_role do
+          it('returns true for orders read', action: :read) { expect(response).to be false }
+          it('returns true for orders create', action: :create) { expect(response).to be false }
+          it('returns true for orders update', action: :update) { expect(response).to be false }
+          it('returns true for orders delete', action: :delete) { expect(response).to be false }
+        end
+      end
+
+      context 'for not my_resource', resource: :not_my_resource do
+        context 'when admin', role: :custom_role do
+          it('returns true for orders read', action: :read) { expect(response).to be false }
+          it('returns true for orders create', action: :create) { expect(response).to be false }
+          it('returns true for orders update', action: :update) { expect(response).to be false }
+          it('returns true for orders delete', action: :delete) { expect(response).to be false }
+        end
+
+        context 'when admin', role: :other_custom_role do
+          it('returns true for orders read', action: :read) { expect(response).to be false }
+          it('returns true for orders create', action: :create) { expect(response).to be false }
+          it('returns true for orders update', action: :update) { expect(response).to be false }
+          it('returns true for orders delete', action: :delete) { expect(response).to be false }
+        end
+      end
+    end
   end
 end
