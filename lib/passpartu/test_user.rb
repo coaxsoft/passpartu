@@ -3,7 +3,7 @@
 # for testing only
 
 module Passpartu
-  class User
+  class TestUser
     attr_reader :role
 
     def initialize(role)
@@ -11,7 +11,7 @@ module Passpartu
     end
   end
 
-  class Person
+  class TestPerson
     attr_reader :role
 
     def initialize(role)

@@ -1,12 +1,12 @@
 # frozen_string_literal: true
-
+require 'byebug'
 module Passpartu
   class Verify
     CRUD_KEY = 'crud'
 
-    attr_reader :role, :keys, :result, :only, :except, :block
+    attr_reader :role, :keys, :result, :only, :except, :block, :policy_hash
 
-    def initialize(role, keys, only, except, skip, block)
+    def initialize(role, keys, only, except, skip, policy_hash, block)
       exclusion = except || skip # alias
 
       @role = role.to_s
@@ -14,12 +14,13 @@ module Passpartu
       @only = Array(only).map(&:to_s) if present?(only)
       @except = Array(exclusion).map(&:to_s) if present?(exclusion) && !@only
       @block = block
+      @policy_hash = deep_stringify_keys(policy_hash)
 
       raise PolicyYmlNotFoundError if Passpartu.policy.nil?
     end
 
-    def self.call(role, keys, only: nil, except: nil, skip: nil, &block)
-      new(role, keys, only, except, skip, block).call
+    def self.call(role, keys, only: nil, except: nil, skip: nil, policy_hash: Passpartu.policy, &block)
+      new(role, keys, only, except, skip, policy_hash, block).call
     end
 
     def call
@@ -50,7 +51,7 @@ module Passpartu
     def default_check
       return unless policy_missed?
 
-      @result = Passpartu.policy.dig(role, *keys)
+      @result = policy_hash.dig(role, *keys)
     end
 
     def check_crud_if
@@ -78,6 +79,12 @@ module Passpartu
 
     def present?(item)
       !blank?(item)
+    end
+
+    def deep_stringify_keys(hash)
+      return hash.deep_stringify_keys if hash.respond_to?(:deep_stringify_keys)
+
+      JSON.parse(JSON.dump(hash))
     end
   end
 end

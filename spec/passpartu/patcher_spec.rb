@@ -2,7 +2,7 @@
 
 RSpec.describe Passpartu::Patcher do
   describe '#call' do
-    let(:policy_class) { Passpartu::User }
+    let(:policy_class) { Passpartu::TestUser }
 
     it 'add method can? to policy_class' do
       described_class.call(policy_class)
