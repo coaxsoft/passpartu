@@ -31,7 +31,7 @@ module Passpartu
   end
 
   class Config
-    attr_accessor :raise_policy_missed_error
+    attr_accessor :raise_policy_missed_error, :role_access_method
     attr_reader :policy_file, :check_waterfall, :policy
 
     DEFAULT_POLICY_FILE = './config/passpartu.yml'
@@ -41,6 +41,7 @@ module Passpartu
       self.policy = load_policy_file(policy_file) if File.exist?(policy_file)
       @raise_policy_missed_error = true
       @check_waterfall = false
+      @role_access_method = :role
     end
 
     def policy_file=(file = nil)
