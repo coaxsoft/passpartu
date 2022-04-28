@@ -18,4 +18,12 @@ module Passpartu
       @role = role
     end
   end
+
+  class TestUserWithOtherRoleMethod
+    attr_reader :other_role_method
+
+    def initialize(role)
+      @other_role_method = role
+    end
+  end
 end

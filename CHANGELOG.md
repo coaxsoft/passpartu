@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.0] - 2022-04-28
+
+### Added
+
+- Add `role_access_method` config to change role method
+- Add method `policy_hash` - policy will be read from it instead of passpartu.yml
+
+### Improvements
+
 ## [1.0.3] - 2022-03-14
 
 ### Improvements

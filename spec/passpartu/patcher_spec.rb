@@ -146,5 +146,38 @@ RSpec.describe Passpartu::Patcher do
         end
       end
     end
+
+    context 'with other role_access_method method' do
+      let(:policy_class) { Passpartu::TestUserWithOtherRoleMethod }
+
+      context 'when config changed' do
+        before do
+          Passpartu.configure do |config|
+            config.role_access_method = :other_role_method
+          end
+        end
+
+        it 'responds to admin and manager' do
+          described_class.call(policy_class)
+          admin1 = Passpartu::TestUserWithOtherRoleMethod.new('admin')
+          manager1 = Passpartu::TestUserWithOtherRoleMethod.new('manager')
+          expect(admin1.can?(:products, :delete)).to be true
+          expect(manager1.can?(:products, :delete)).to be false
+        end
+      end
+
+      context 'when config default' do
+        before do
+          Passpartu.configure do |config|
+            config.role_access_method = :role
+          end
+        end
+        it 'raises error' do
+          described_class.call(policy_class)
+          admin1 = Passpartu::TestUserWithOtherRoleMethod.new('admin')
+          expect { admin1.can?(:products, :delete) }.to raise_error(NoMethodError)
+        end
+      end
+    end
   end
 end

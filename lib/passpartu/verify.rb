@@ -6,7 +6,7 @@ module Passpartu
 
     attr_reader :role, :keys, :result, :only, :except, :block, :policy_hash
 
-    def initialize(role, keys, only, except, skip, policy_hash, block)
+    def initialize(role, keys, only, except, skip, policy_hash, &block)
       exclusion = except || skip # alias
 
       @role = role.to_s
@@ -20,7 +20,7 @@ module Passpartu
     end
 
     def self.call(role, keys, only: nil, except: nil, skip: nil, policy_hash: Passpartu.policy, &block)
-      new(role, keys, only, except, skip, policy_hash, block).call
+      new(role, keys, only, except, skip, policy_hash, &block).call
     end
 
     def call
@@ -49,8 +49,6 @@ module Passpartu
     end
 
     def default_check
-      return unless policy_missed?
-
       @result = policy_hash.dig(role, *keys)
     end
 

@@ -1,11 +1,13 @@
-# Passpartu v1.0.3 - [changelog](https://github.com/coaxsoft/passpartu/blob/master/CHANGELOG.md)
+# Passpartu - [changelog](https://github.com/coaxsoft/passpartu/blob/master/CHANGELOG.md)
+
+[![Gem Version](https://badge.fury.io/rb/passpartu.png)](https://badge.fury.io/rb/passpartu)
 
 Passpartu makes policies great again (works awesome with [Pundit](https://rubygems.org/gems/pundit)).
 
 ### Tested with ruby:
-- 2.7.3
-- 3.0.0
 - 3.1.1
+- 3.0.0
+- 2.7.3
 
 Instead of this:
 
@@ -78,7 +80,7 @@ admin:
 
 ## Features
 
-#### CRUD
+### CRUD
 
 It's possible to use `crud` key to set values for `create`, `read`, `update`, `delete` at once.
 `create`, `read`, `update`, `delete` has higher priority than `crud`
@@ -86,7 +88,7 @@ It's possible to use `crud` key to set values for `create`, `read`, `update`, `d
 In case `crud: true` and `delete: false` - result `false` 
 
 
-#### Only
+### Only
 
 It's possible to include specific roles to checks
 
@@ -109,7 +111,7 @@ Note: `only` has higher priority than `except/skip`. Do not use both.
   user_admin.can?(:orders, :edit, only: :admin, except: :admin) # returns true
 ```
 
-#### Skip (except)
+### Skip (except)
 
 It's possible to exclude roles from checks
 
@@ -136,7 +138,7 @@ Note: `expect` has higher priority than `skip`. Do not use both.
   user_agent.can?(:orders, :edit, skip: [:admin, :manager]) { user_agent.orders.include?(order) }
 ```
 
-#### Per role methods
+### Per role methods
 
 Check user roles AND policy rule
 
@@ -148,7 +150,7 @@ Check user roles AND policy rule
     user_admin.manager_can?(:orders, :edit) # false
 ```
 
-#### Code blocks
+### Code blocks
 
 ```ruby
   # check rules as usual AND code in the block   
@@ -158,7 +160,7 @@ Check user roles AND policy rule
   user_agent.agent_can?(:orders, :edit, except: [:admin, :manager]) { user_agent.orders.include?(order) }
 ```
 
-#### Waterfall check
+### Waterfall check
 
 Allow or restrict absolutely everything for particular role or/and particular domain.
 
@@ -190,7 +192,7 @@ user_medium_loser.can?(:orders, :delete) # false
 user_medium_loser.can?(:products, :create) # true
 user_medium_loser.can?(:products, :create, :and_delete) # true
 ```
-##### Real life example
+#### Real life example
 
 You need to check custom rule for agent
 
@@ -232,6 +234,7 @@ Passpartu.configure do |config|
   config.policy_file = './config/passpartu.yml'
   config.raise_policy_missed_error = true
   config.check_waterfall = false
+  config.role_access_method = :role
 end
 
 ```
