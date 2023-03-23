@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.1] - 2023-03-23
+
+- Remove byebug dependency
+
 ## [1.1.0] - 2022-04-28
 
 ### Added
