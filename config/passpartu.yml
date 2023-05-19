@@ -9,6 +9,9 @@ admin:
     delete: true
   items:
     crud: true
+  bookings:
+    update: true
+
 manager:
   orders:
     create: true
@@ -18,11 +21,17 @@ manager:
     create: true
     edit: true
     delete: false
+  bookings:
+    update: maybe
 
 super_admin: true
+
 super_looser: false
+
 medium_looser:
   orders:
     create: true
     delete: false
   products: true
+  bookings:
+    update: false

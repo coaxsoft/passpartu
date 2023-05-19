@@ -3,6 +3,7 @@
 module Passpartu
   class ValidateResult
     class PolicyMissedError < StandardError; end
+    class InvalidResultError < StandardError; end
 
     attr_reader :result
 
@@ -15,20 +16,20 @@ module Passpartu
     end
 
     def call
-      raise PolicyMissedError if raise_error?
-      return false unless boolean?
+      raise PolicyMissedError if raise_policy_missed_error?
+      return false if result_not_defined?
 
       result
     end
 
     private
 
-    def boolean?
-      [true, false].include?(result)
+    def raise_policy_missed_error?
+      result_not_defined? && Passpartu.config.raise_policy_missed_error
     end
 
-    def raise_error?
-      !boolean? && Passpartu.config.raise_policy_missed_error
+    def result_not_defined?
+      result.nil? || result.is_a?(Hash)
     end
   end
 end

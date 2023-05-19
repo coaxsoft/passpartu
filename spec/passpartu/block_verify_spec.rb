@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Passpartu::Verify do
+RSpec.describe Passpartu::BlockVerify do
   describe '#call' do
     subject(:response) do |ex|
       described_class.call(ex.metadata[:role], [ex.metadata[:resource], ex.metadata[:action]])
@@ -34,33 +34,27 @@ RSpec.describe Passpartu::Verify do
 
     context 'when crud true' do
       context 'when admin', role: :admin do
-        before(:each) do
-          Passpartu.configure do |config|
-            config.policy_file = './config/passpartu.yml'
-          end
-        end
-
         context 'with Items', resource: :items do
-          it 'returns true for items create', action: :create do
+          it 'returns true for orders create', action: :create do
             expect(response).to be true
           end
 
-          it 'returns true for items read', action: :read do
+          it 'returns true for orders read', action: :read do
             expect(response).to be true
           end
 
-          it 'returns true for items update', action: :update do
+          it 'returns true for orders update', action: :update do
             expect(response).to be true
           end
 
-          it 'returns true for items delete', action: :delete do
+          it 'returns true for orders delete', action: :delete do
             expect(response).to be true
           end
         end
       end
 
       context 'when read false' do
-        before(:each) { Passpartu.policy['admin']['items']['delete'] = false }
+        before { Passpartu.policy['admin']['items']['delete'] = false }
 
         after { Passpartu.configure {} }
 
@@ -199,7 +193,7 @@ RSpec.describe Passpartu::Verify do
         it 'returns true for admin and manager' do
           expect(described_class.call(:admin, %i[orders create], only: %i[admin manager], except: :manager)).to be true
           expect(described_class.call(:manager, %i[orders create], only: %i[admin manager],
-                                                                   except: :manager)).to be true
+                                      except: :manager)).to be true
         end
       end
     end
@@ -332,6 +326,57 @@ RSpec.describe Passpartu::Verify do
           it('returns true for orders update', action: :update) { expect(response).to be false }
           it('returns true for orders delete', action: :delete) { expect(response).to be false }
         end
+      end
+    end
+  end
+
+
+  context "with 'maybe' value" do
+    subject(:response) do |ex|
+      described_class.call(ex.metadata[:role], [ex.metadata[:resource], :update])
+    end
+
+    context 'for allowed resource', resource: :bookings do
+      context 'when admin', role: :admin do
+        it('returns true') { expect(response).to be true }
+      end
+    end
+
+    context 'for maybe allowed resource', resource: :bookings do
+      context 'when manager', role: :manager do
+        context 'when block is present' do
+          context 'when positive condition' do
+            it('returns true') do
+              expect(described_class.call(:manager, [:bookings, :update]) { 'true' == 'true' }).to be true
+            end
+          end
+
+          context 'when negative condition' do
+            it('returns false') do
+              expect(described_class.call(:manager, [:bookings, :update]) { 'true' == 'false' }).to be false
+            end
+          end
+        end
+
+        context 'when block is NOT present' do
+          context 'when positive condition' do
+            it('raises an error') do
+              expect { described_class.call(:manager, [:bookings, :update]) }.to raise_error(Passpartu::BlockVerify::BlockMissedError, "Block is required for 'maybe' allowed resource")
+            end
+          end
+
+          context 'when negative condition' do
+            it('raises an error') do
+              expect { described_class.call(:manager, [:bookings, :update]) }.to raise_error(Passpartu::BlockVerify::BlockMissedError, "Block is required for 'maybe' allowed resource")
+            end
+          end
+        end
+      end
+    end
+
+    context 'for not allowed resource', resource: :bookings do
+      context 'when admin', role: :medium_looser do
+        it('returns true') { expect(response).to be false }
       end
     end
   end
