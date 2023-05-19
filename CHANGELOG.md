@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.0] - 2023-05-19
+
+- Add 'maybe' value option
+
 ## [1.1.1] - 2023-03-23
 
 - Remove byebug dependency

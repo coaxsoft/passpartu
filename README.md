@@ -87,7 +87,6 @@ It's possible to use `crud` key to set values for `create`, `read`, `update`, `d
 
 In case `crud: true` and `delete: false` - result `false` 
 
-
 ### Only
 
 It's possible to include specific roles to checks
@@ -158,6 +157,25 @@ Check user roles AND policy rule
   
   # OR   
   user_agent.agent_can?(:orders, :edit, except: [:admin, :manager]) { user_agent.orders.include?(order) }
+```
+
+### 'Maybe' option
+
+Option 'maybe' means that user can do something if the block returns true. In this case block is required
+and error is raised when option is maybe and no block given.
+
+```yml
+manager:
+  products:
+    create: true
+    delete: false
+  bookings:
+    update: maybe
+```
+
+```ruby
+manager.can?(:bookings, :update) # raises error
+manager.can?(:bookings, :update) { user.bookings.include?(booking) } # returns true or false
 ```
 
 ### Waterfall check

@@ -83,6 +83,8 @@ module Passpartu
           value.define_singleton_method(:dig) { |*_keys| true }
         when false
           value.define_singleton_method(:dig) { |*_keys| false }
+        when 'maybe'
+          value.define_singleton_method(:dig) { |*_keys| 'maybe' }
         else
           patch_policy_booleans_if(value)
         end
