@@ -47,7 +47,7 @@ module Passpartu
     end
 
     def default_check
-      @result = policy_hash.dig(role, *keys)
+      @result = policy_hash.has_key?(role) ? policy_hash.dig(role, *keys) : policy_hash.dig(*keys)
     end
 
     def check_crud_if

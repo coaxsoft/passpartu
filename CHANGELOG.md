@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.1] - 2023-11-30
+
+- Improve usage of `policy_hash` method
+
 ## [1.2.0] - 2023-05-19
 
 - Add 'maybe' value option

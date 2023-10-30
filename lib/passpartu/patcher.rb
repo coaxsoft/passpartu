@@ -15,7 +15,6 @@ module Passpartu
     end
 
     def call
-      phash = respond_to?(:policy_hash) ? {} : Passpartu.policy
       role_method = Passpartu.config.role_access_method
 
       klass.class_eval do
@@ -26,12 +25,12 @@ module Passpartu
             only: only,
             except: except,
             skip: skip,
-            policy_hash: phash,
+            policy_hash: -> { respond_to?(:policy_hash) ? policy_hash : Passpartu.policy }.call,
             &block
           )
         end
 
-        phash.each_key do |policy_role|
+        Passpartu.policy.each_key do |policy_role|
           define_method("#{policy_role}_can?") do |*keys, only: nil, except: nil, skip: nil, &block|
             send(role_method).to_s == policy_role &&
               Passpartu::BlockVerify.call(
@@ -40,7 +39,7 @@ module Passpartu
                 only: only,
                 except: except,
                 skip: skip,
-                policy_hash: phash,
+                policy_hash: -> { respond_to?(:policy_hash) ? policy_hash : Passpartu.policy }.call,
                 &block
               )
           end
