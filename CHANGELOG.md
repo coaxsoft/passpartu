@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.2] - 2025-06-05
+
+- Update `YAML.load_file` to `YAML.safe_load_file` to prevent security issues with YAML parsing
+
 ## [1.2.1] - 2023-11-30
 
 - Improve usage of `policy_hash` method

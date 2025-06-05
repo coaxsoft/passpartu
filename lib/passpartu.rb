@@ -66,7 +66,17 @@ module Passpartu
     private
 
     def load_policy_file(path)
-      RUBY_VERSION.to_f >= 3.1 ? YAML.load_file(path, aliases: true) : YAML.load_file(path)
+      yaml = File.read(path)
+
+      if RUBY_VERSION.to_f >= 3.1
+        YAML.safe_load(
+          yaml,
+          permitted_classes: [Symbol],
+          aliases: true
+        )
+      else
+        YAML.load_file(yaml)
+      end
     end
 
     def policy=(value)
